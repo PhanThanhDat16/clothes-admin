@@ -3,11 +3,36 @@
 ## Guideline
 
 - Node version: `v20.18.0`
-- Run command: `npm install`
 
-## Compile and Hot-Reload for Development
+### Installation
 
-- Run command: `npm run dev`
+1. Clone the repository:
+
+```sh
+git clone https://github.com/PhanThanhDat16/clothes-admin.git
+```
+
+2. Navigate to the project directory:
+
+```sh
+cd admin
+```
+
+3. Install the dependencies:
+
+```sh
+npm install
+```
+
+### Running the application
+
+1. Start the development server:
+
+```sh
+npm run dev
+```
+
+2. The server will start on `http://localhost:3001`.
 
 ### Husky and lint-staged with [Husky](https://typicode.github.io/husky/) and [lint-staged](https://github.com/lint-staged/lint-staged#readme)
 

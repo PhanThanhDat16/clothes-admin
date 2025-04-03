@@ -15,7 +15,7 @@ git clone https://github.com/PhanThanhDat16/clothes-admin.git
 2. Navigate to the project directory:
 
 ```sh
-cd admin
+cd clothes-admin
 ```
 
 3. Install the dependencies:

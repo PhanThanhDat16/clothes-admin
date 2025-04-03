@@ -1,11 +1,11 @@
 // Libs
 import { Route, Routes } from 'react-router-dom'
 
-// Page
-import HomePage from '@/pages/HomePage'
-
 // Router
 import { HOME_PAGE } from '@/constants'
+
+// Page
+import HomePage from '@/pages/HomePage'
 
 import MainLayout from '@/layouts'
 

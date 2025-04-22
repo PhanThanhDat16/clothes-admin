@@ -1,11 +1,9 @@
 import { NavLink } from 'react-router-dom'
-import { CiCircleList } from 'react-icons/ci'
 
 const Sidebar = () => {
   return (
-    <aside className="w-64 h-screen bg-stone-800 text-white p-6">
-      <CiCircleList className="size-6" />
-      <h2 className="text-2xl font-bold mb-6">Clothes Analyst</h2>
+    <aside className="w-64 h-screen p-6 text-white bg-stone-800">
+      <h2 className="mb-6 text-2xl font-bold">Clothes Analyst</h2>
       <nav className="flex flex-col gap-4">
         <NavLink to="/" end className="block p-2 rounded-md hover:text-blue-400 hover:bg-stone-700 ">
           Dashboard

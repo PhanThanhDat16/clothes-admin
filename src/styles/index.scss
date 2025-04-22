@@ -2,6 +2,8 @@
 @use 'tailwindcss/components';
 @use 'tailwindcss/utilities';
 
+@use './variable';
+
 *,
 *:before,
 *:after {
@@ -29,11 +31,18 @@ button {
   cursor: pointer;
   background-color: transparent;
   outline: none;
-  border: 0;
 }
 body {
   min-height: 100vh;
   font-weight: 400;
   font-size: 16px;
   line-height: 1;
+}
+
+.scroll-x-table::-webkit-scrollbar {
+  height: 6px;
+}
+.scroll-x-table::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 9999px;
 }

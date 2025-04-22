@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom'
 
 const Sidebar = () => {
   return (
+
     <aside className="fixed w-64 h-screen p-6 text-white bg-stone-800">
       <h2 className="mb-6 text-2xl font-bold">Clothes Analyst</h2>
       <nav className="flex flex-col gap-4">

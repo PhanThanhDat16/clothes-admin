@@ -1,4 +1,5 @@
 // Components
+import ExportImport from '@/components/common/ExportImport'
 import Heading from '@/components/common/Heading'
 import Table from '@/components/common/Table'
 // import { IUser } from '@/models/user'
@@ -178,7 +179,7 @@ const Customer = () => {
       title: 'Actions',
       dataKey: 'actions',
       render: () => (
-        <td className="flex items-center gap-2 px-4 py-2 text-sm font-normal">
+        <td className="flex items-center gap-2 text-sm font-normal">
           <span>
             <i className="bx bx-trash text-[var(--Aluminium)] text-base"></i>
           </span>
@@ -204,7 +205,13 @@ const Customer = () => {
     <div className="h-full">
       <Heading text="Customer" />
 
-      <div className="p-4 bg-white h-[104px] rounded-md">
+      <div className="p-4 bg-white rounded-md">
+        <div className="gap-4 py-3 lg:gap-6 xl:gap-6 md:flex xl:flex">
+          <ExportImport />
+        </div>
+      </div>
+
+      <div className="p-4 mt-4 bg-white h-[104px] rounded-md">
         <div className="flex items-center h-full gap-6 py-3 ">
           <input
             type="text"

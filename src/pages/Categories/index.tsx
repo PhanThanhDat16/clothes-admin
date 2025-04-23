@@ -64,7 +64,7 @@ const Category = () => {
 
   return (
     <>
-      <h1 className="text-2xl font-semibold">Category</h1>
+      <h1 className="text-2xl font-semibold mt-6">Category</h1>
       {/* export */}
       <div className="grid w-full grid-cols-2 gap-4 p-4 mt-6 text-sm bg-white rounded-md">
         <ExportImport />
@@ -89,7 +89,7 @@ const Category = () => {
         <input
           type="text"
           placeholder="Search by Category name"
-          className="items-center h-12 px-4 m-2 bg-gray-100 border rounded-md"
+          className="items-center h-12 px-4 my-2 bg-gray-100 border rounded-md"
         />
         <div className="flex w-full gap-2 my-2">
           <button className="flex items-center justify-center flex-1 text-white border rounded-md bg-emerald-500">
@@ -100,9 +100,8 @@ const Category = () => {
       </div>
 
       {/* table */}
-      <div className="mt-4 overflow-hidden bg-white rounded-lg">
+      <div className="mt-6 overflow-hidden bg-white rounded-lg">
         <Table columns={columns} data={dataFormat as any} />
-
         <div className="flex flex-col justify-between p-4 text-xs text-gray-600 sm:flex-row dark:text-gray-400">
           <span className="flex items-center font-semibold tracking-wide uppercase">Showing 1-12 of 12</span>
           <div className="flex mt-2 sm:mt-auto sm:justify-end">

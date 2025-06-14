@@ -1,4 +1,5 @@
 import ExportImport from '@/components/common/ExportImport'
+import Heading from '@/components/common/Heading'
 import Table from '@/components/common/Table'
 
 const dataProduct = [
@@ -76,14 +77,14 @@ const Product = () => {
       title: 'Actions',
       dataKey: 'actions',
       render: () => (
-        <td className="flex items-center gap-2 text-sm font-normal">
+        <div className="flex items-center gap-2 text-sm font-normal">
           <span>
             <i className="bx bx-trash text-[var(--Aluminium)] text-base"></i>
           </span>
           <span>
             <i className="bx bx-edit text-[var(--Aluminium)] text-base"></i>
           </span>
-        </td>
+        </div>
       )
     }
   ]
@@ -101,7 +102,7 @@ const Product = () => {
 
   return (
     <>
-      <h2 className="mt-6 text-2xl font-semibold">Product</h2>
+      <Heading text="Product" />
       {/* export */}
       <div className="grid w-full grid-cols-2 gap-4 p-4 mt-6 text-sm bg-white rounded-md">
         <ExportImport />

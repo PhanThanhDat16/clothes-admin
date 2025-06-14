@@ -1,4 +1,5 @@
 import ExportImport from '@/components/common/ExportImport'
+import Heading from '@/components/common/Heading'
 import Table from '@/components/common/Table'
 
 const dataCategory = [
@@ -43,14 +44,14 @@ const Category = () => {
       title: 'Actions',
       dataKey: 'actions',
       render: () => (
-        <td className="flex items-center gap-2 text-sm font-normal">
+        <div className="flex items-center gap-2 text-sm font-normal">
           <span>
             <i className="bx bx-trash text-[var(--Aluminium)] text-base"></i>
           </span>
           <span>
             <i className="bx bx-edit text-[var(--Aluminium)] text-base"></i>
           </span>
-        </td>
+        </div>
       )
     }
   ]
@@ -64,7 +65,8 @@ const Category = () => {
 
   return (
     <>
-      <h1 className="text-2xl font-semibold mt-6">Category</h1>
+      <Heading text="Category" />
+
       {/* export */}
       <div className="grid w-full grid-cols-2 gap-4 p-4 mt-6 text-sm bg-white rounded-md">
         <ExportImport />

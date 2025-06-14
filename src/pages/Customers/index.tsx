@@ -179,14 +179,14 @@ const Customer = () => {
       title: 'Actions',
       dataKey: 'actions',
       render: () => (
-        <td className="flex items-center gap-2 text-sm font-normal">
+        <div className="flex items-center gap-2 text-sm font-normal">
           <span>
             <i className="bx bx-trash text-[var(--Aluminium)] text-base"></i>
           </span>
           <span>
             <i className="bx bx-edit text-[var(--Aluminium)] text-base"></i>
           </span>
-        </td>
+        </div>
       )
     }
   ]

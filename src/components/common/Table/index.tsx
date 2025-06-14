@@ -12,7 +12,6 @@ interface ITableProps {
 }
 
 const Table = ({ columns, data }: ITableProps) => {
-  console.log(data)
   return (
     <>
       <table className="w-full">

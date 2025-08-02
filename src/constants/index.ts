@@ -1,0 +1,6 @@
+export const HOME_PAGE = '/'
+export const CATEGORIES_PAGE = '/categories'
+export const PRODUCTS_PAGE = '/products'
+export const CUSTOMERS_PAGE = '/customers'
+export const ORDERS_PAGE = '/orders'
+export const PROFILE = '/profile'

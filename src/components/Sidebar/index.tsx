@@ -12,7 +12,7 @@ const Sidebar = () => {
             to={item.path}
             className={({ isActive }) =>
               `group p-2 rounded-md flex items-center gap-2 
-             ${isActive ? 'text-[var(--Gossamer)] font-semibold' : 'text-[var(--Mobster)]'}`
+             ${isActive ? 'text-[var(--Gossamer)] bg-[var(--Cornflower-Blue)] font-semibold' : 'text-[var(--Mobster)] bg-white'}`
             }
           >
             <i

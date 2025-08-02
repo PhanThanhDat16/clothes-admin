@@ -1,5 +1,6 @@
 import ExportImport from '@/components/common/ExportImport'
 import Heading from '@/components/common/Heading'
+import SidebarAdd from '@/components/common/SidebarAdd'
 import Table from '@/components/common/Table'
 
 const dataCategory = [
@@ -79,10 +80,7 @@ const Category = () => {
             <i className="pr-1 bx bx-trash"></i>
             <span>Delete</span>
           </button>
-          <button className="flex items-center justify-center flex-1 text-white border rounded-md bg-emerald-500">
-            <i className="pr-1 bx bx-plus"></i>
-            <span>Add Category</span>
-          </button>
+          <SidebarAdd nameAction="Add Category" type="category" />
         </div>
       </div>
 

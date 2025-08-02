@@ -30,7 +30,7 @@ const HomePage = () => {
       <Heading text="Dashboard Overview" />
 
       {/* Over view */}
-      <div className="grid gap-2 mb-8 xl:grid-cols-5 md:grid-cols-2">
+      <div className="grid gap-2 mb-8 xl:grid-cols-5 md:grid-cols-3">
         <div className="min-w-0 rounded-lg overflow-hidden bg-white flex justify-center h-full">
           <div className=" border border-gray-200 justify-between w-full p-6 rounded-lg text-white bg-teal-600">
             <div className="text-center xl:mb-0 mb-3">
@@ -92,7 +92,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4 mb-8">
+      <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-4 mb-8">
         <div className="min-w-0 rounded-lg overflow-hidden bg-white flex h-full">
           <div className="p-4 flex items-center border border-gray-200 w-full rounded-lg">
             <div className="flex items-center justify-center p-3 rounded-full h-12 w-12 text-center mr-4 text-lg text-orange-600 bg-orange-100">
@@ -112,10 +112,8 @@ const HomePage = () => {
               <svg
                 stroke="currentColor"
                 fill="none"
-                strokeWidth={2}
                 viewBox="0 0 24 24"
                 strokeLinecap="round"
-                strokeLinejoin="round"
                 height="1em"
                 width="1em"
                 xmlns="http://www.w3.org/2000/svg"
@@ -139,10 +137,8 @@ const HomePage = () => {
               <svg
                 stroke="currentColor"
                 fill="none"
-                strokeWidth={2}
                 viewBox="0 0 24 24"
                 strokeLinecap="round"
-                strokeLinejoin="round"
                 height="1em"
                 width="1em"
                 xmlns="http://www.w3.org/2000/svg"
@@ -226,7 +222,7 @@ const HomePage = () => {
         </div>
 
         {/* Doughnut Chart */}
-        <div className="bg-white shadow-md doughnut-chart w-full max-w-[400px] mx-auto">
+        <div className="bg-white shadow-md doughnut-chart w-full lg:max-w-[400px] mx-auto">
           <div className="flex justify-between p-5 border-b db-card-header">
             <h3 className="db-card-title text-[14.5px] md:text-[16px]">Orders Summary</h3>
           </div>

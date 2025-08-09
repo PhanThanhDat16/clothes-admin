@@ -1,15 +1,14 @@
 // Libs
-import { BrowserRouter } from 'react-router-dom'
 
 // Routers
+import { ToastContainer } from 'react-toastify'
 import AppRouters from './routers'
 
 const App = () => {
   return (
     <div className="main-app">
-      <BrowserRouter>
-        <AppRouters></AppRouters>
-      </BrowserRouter>
+      <ToastContainer />
+      <AppRouters />
     </div>
   )
 }

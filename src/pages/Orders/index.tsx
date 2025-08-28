@@ -1,7 +1,7 @@
 import Heading from '@/components/common/Heading'
 import Table from '@/components/common/Table'
 
-const mockData = [
+const mockData: any[] = [
   {
     id: 1,
     orderTime: '2025-01-01 10:00:00',
@@ -336,59 +336,71 @@ const Order = () => {
         </div>
       </div>
 
-      <div className="mt-4 overflow-hidden bg-white rounded-lg">
-        <div className="w-full overflow-hidden overflow-x-scroll">
-          <Table columns={columns} data={dataFormat as any} />
+      {mockData.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-lg shadow-sm mt-6">
+          <div className="p-6 bg-emerald-50 rounded-full mb-4">
+            <i className="bx bx-receipt text-5xl text-emerald-500"></i>
+          </div>
+          <h3 className="text-lg font-semibold text-slate-800">No Orders Found</h3>
+          <p className="text-sm text-slate-500 mt-2 mb-6 text-center max-w-sm">
+            There are no orders yet. Orders will appear here once customers start purchasing products.
+          </p>
         </div>
+      ) : (
+        <div className="mt-4 overflow-hidden bg-white rounded-lg">
+          <div className="w-full overflow-hidden overflow-x-scroll">
+            <Table columns={columns} data={dataFormat as any} />
+          </div>
 
-        <div className="flex flex-col justify-between p-4 text-xs text-gray-600 sm:flex-row dark:text-gray-400">
-          <span className="flex items-center font-semibold tracking-wide uppercase">Showing 1-12 of 12</span>
-          <div className="flex mt-2 sm:mt-auto sm:justify-end">
-            <nav aria-label="Table navigation">
-              <ul className="inline-flex items-center">
-                <li>
-                  <button
-                    className="inline-flex items-center justify-center p-2 font-medium leading-5 text-gray-600 align-bottom transition-colors duration-150 border border-transparent rounded-md opacity-50 cursor-pointer focus:outline-none dark:text-gray-400"
-                    type="button"
-                    aria-label="Previous"
-                  >
-                    <svg className="w-3 h-3" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
-                      <path
-                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                        fillRule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className="inline-flex items-center justify-center px-3 py-1 text-xs font-medium leading-5 text-white align-bottom transition-colors duration-150 border border-transparent rounded-md cursor-pointer focus:outline-none bg-emerald-500 active:bg-emerald-600 hover:bg-emerald-600"
-                    type="button"
-                  >
-                    1
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className="inline-flex items-center justify-center p-2 font-medium leading-5 text-gray-600 align-bottom transition-colors duration-150 border border-transparent rounded-md opacity-50 cursor-pointer cursor-not-allowed focus:outline-none dark:text-gray-400"
-                    type="button"
-                    aria-label="Next"
-                  >
-                    <svg className="w-3 h-3" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
-                      <path
-                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                        clipRule="evenodd"
-                        fillRule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                </li>
-              </ul>
-            </nav>
+          <div className="flex flex-col justify-between p-4 text-xs text-gray-600 sm:flex-row dark:text-gray-400">
+            <span className="flex items-center font-semibold tracking-wide uppercase">Showing 1-12 of 12</span>
+            <div className="flex mt-2 sm:mt-auto sm:justify-end">
+              <nav aria-label="Table navigation">
+                <ul className="inline-flex items-center">
+                  <li>
+                    <button
+                      className="inline-flex items-center justify-center p-2 font-medium leading-5 text-gray-600 align-bottom transition-colors duration-150 border border-transparent rounded-md opacity-50 cursor-pointer focus:outline-none dark:text-gray-400"
+                      type="button"
+                      aria-label="Previous"
+                    >
+                      <svg className="w-3 h-3" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                          d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                          fillRule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="inline-flex items-center justify-center px-3 py-1 text-xs font-medium leading-5 text-white align-bottom transition-colors duration-150 border border-transparent rounded-md cursor-pointer focus:outline-none bg-emerald-500 active:bg-emerald-600 hover:bg-emerald-600"
+                      type="button"
+                    >
+                      1
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="inline-flex items-center justify-center p-2 font-medium leading-5 text-gray-600 align-bottom transition-colors duration-150 border border-transparent rounded-md opacity-50 cursor-pointer cursor-not-allowed focus:outline-none dark:text-gray-400"
+                      type="button"
+                      aria-label="Next"
+                    >
+                      <svg className="w-3 h-3" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                          clipRule="evenodd"
+                          fillRule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

@@ -27,6 +27,9 @@ import PrivateRoute from './PrivateRoute'
 import PrivateRouteLogin from './PrivateRouteLogin'
 import Login from '@/pages/Login'
 import SignUp from '@/pages/Signup'
+import CategoryDetail from '@/pages/CategoryDetail'
+import ProductDetail from '@/pages/ProductDetail'
+import CustomerDetail from '@/pages/CustomerDetail'
 
 const AppRouters = () => {
   return (
@@ -36,8 +39,11 @@ const AppRouters = () => {
           <Route path={HOME_PAGE} element={<MainLayout />}>
             <Route index element={<HomePage />} />
             <Route path={CATEGORIES_PAGE} element={<Category />} />
+            <Route path={`${CATEGORIES_PAGE}/:id`} element={<CategoryDetail />} />
             <Route path={PRODUCTS_PAGE} element={<Product />} />
+            <Route path={`${PRODUCTS_PAGE}/:id`} element={<ProductDetail />} />
             <Route path={CUSTOMERS_PAGE} element={<Customer />} />
+            <Route path={`${CUSTOMERS_PAGE}/:id`} element={<CustomerDetail />} />
             <Route path={ORDERS_PAGE} element={<Order />} />
             <Route path={PROFILE} element={<Profile />} />
           </Route>

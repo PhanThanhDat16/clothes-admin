@@ -24,7 +24,7 @@ const ButtonBadge = ({
   return (
     <button
       type={type}
-      className={`flex items-center text-[12px] justify-center text-white border-transparent rounded-lg gap-x-1 bg-primary ${className} ${isDisabled ? 'opacity-50 flex items-center justify-center' : ''}`}
+      className={`flex items-center justify-center text-white border-transparent rounded-lg gap-x-1 bg-primary ${className} ${isDisabled ? 'opacity-50 flex items-center justify-center' : ''}`}
       disabled={isDisabled}
       onClick={onClick}
     >

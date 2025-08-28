@@ -1,3 +1,4 @@
+import { handleLogout } from '@/store'
 import axios, { AxiosError } from 'axios'
 import { toast } from 'react-toastify'
 
@@ -38,8 +39,9 @@ axiosConfig.interceptors.response.use(
       if (refreshToken) {
         try {
           const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/refresh-token`, { refreshToken }) // check again
-          const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data.data
+          const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
+          // console.log(newAccessToken)
           localStorage.setItem('accessToken', newAccessToken)
           localStorage.setItem('refreshToken', newRefreshToken)
 
@@ -49,7 +51,7 @@ axiosConfig.interceptors.response.use(
             pauseOnHover: false,
             autoClose: 3000
           })
-          // handleLogout() // check again
+          handleLogout()
           return Promise.reject(error)
         }
       }

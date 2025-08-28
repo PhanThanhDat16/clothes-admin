@@ -1,3 +1,4 @@
+import { handleLogout } from '@/store'
 import { Menu, MenuItems, MenuItem, MenuButton, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react'
 import { NavLink } from 'react-router'
@@ -164,6 +165,7 @@ const Header = () => {
                       className={`flex items-center gap-2 px-4 py-2 text-sm w-full text-left ${
                         active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
                       }`}
+                      onClick={() => handleLogout()}
                     >
                       {item.icon && <i className={`${item.icon}`}></i>}
                       {item.name}

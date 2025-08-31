@@ -44,18 +44,25 @@ import { CATEGORIES_PAGE } from '@/constants'
 //   }
 // ]
 
-// export const COLORSTATUS = [
-//   {
-//     name: 'active',
-//     background: 'bg-green-100',
-//     color: 'text-green-700'
-//   },
-//   {
-//     name: 'inactive',
-//     background: 'bg-red-100',
-//     color: 'text-red-700'
-//   }
-// ]
+interface IColorStatus {
+  name: string
+  background: string
+  color: string
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const COLORSTATUS: IColorStatus[] = [
+  {
+    name: 'active',
+    background: 'bg-green-100',
+    color: 'text-green-700'
+  },
+  {
+    name: 'inactive',
+    background: 'bg-red-100',
+    color: 'text-red-700'
+  }
+]
 
 const LIMIT_PAGE = 10
 const Category = () => {

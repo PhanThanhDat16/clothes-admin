@@ -47,7 +47,7 @@ const Header = () => {
   const unreadCount = notiList.filter((n) => !n.isRead).length
 
   return (
-    <div className=" fixed flex items-center justify-end w-full h-16 gap-6 px-6 bg-white shadow-md ">
+    <div className=" fixed flex items-center justify-end w-full h-16 gap-6 px-6 bg-white shadow-md z-50">
       <div>
         <i className="text-xl text-[var(--Puerto-Rico)] bx bx-menu"></i>
       </div>

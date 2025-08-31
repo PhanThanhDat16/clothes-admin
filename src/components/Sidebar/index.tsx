@@ -3,7 +3,7 @@ import { itemSideBar } from './itemSideBar'
 
 const Sidebar = () => {
   return (
-    <aside className="fixed w-64 h-screen p-6 text-white bg-white">
+    <aside className="fixed w-64 h-screen p-6 text-white bg-white z-50">
       <h2 className="mb-8 text-2xl font-bold text-black">Clothes Analyst</h2>
       <div className="flex flex-col gap-4">
         {itemSideBar.map((item) => (

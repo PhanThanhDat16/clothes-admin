@@ -13,6 +13,7 @@ const statuses = [
 const CategoryDetail = () => {
   const [selectedStatus, setSelectedStatus] = useState(statuses[0])
   const [category, setCategory] = useState<ICategory | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const { id } = useParams()
 
   const getCateDetail = async (id: string) => {
@@ -43,6 +44,7 @@ const CategoryDetail = () => {
       status: selectedStatus.value
     }
     try {
+      setIsSubmitting(true)
       const res = await updateCategory(id as string, result as ICategory)
       setCategory(res.data)
       toast.success('Update category successfull', {
@@ -50,6 +52,8 @@ const CategoryDetail = () => {
       })
     } catch (error) {
       console.log(error)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -65,36 +69,6 @@ const CategoryDetail = () => {
 
       {category && (
         <div className="grid gap-8">
-          {/* Image Upload */}
-          {/* <div className="flex flex-col items-center">
-            <div className="relative w-40 h-40">
-              <img
-                src={previewImage || '/default-image.jpg'}
-                alt="Category"
-                className="w-full h-full object-cover rounded-2xl shadow-md border"
-              />
-              <label
-                htmlFor="imageUpload"
-                className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow cursor-pointer hover:bg-gray-100 transition"
-              >
-                <i className="bx  bx-arrow-out-up-square-half text-gray-600 text-lg"></i>
-              </label>
-              <input
-                id="imageUpload"
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  if (e.target.files && e.target.files[0]) {
-                    const file = e.target.files[0]
-                    setPreviewImage(URL.createObjectURL(file))
-                  }
-                }}
-              />
-            </div>
-            <p className="text-sm text-gray-500 mt-2">Click the icon to update image</p>
-          </div> */}
-
           {/* Form fields */}
           <form className="grid gap-6">
             <div>
@@ -164,10 +138,33 @@ const CategoryDetail = () => {
             <div className="flex justify-end">
               <button
                 type="submit"
-                className="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-medium shadow hover:opacity-90 transition"
+                disabled={isSubmitting}
+                className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-indigo-600 text-white font-medium shadow hover:bg-indigo-700 transition disabled:opacity-50"
                 onClick={(e) => handleSubmit(e)}
               >
-                Save Changes
+                {isSubmitting ? (
+                  <>
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                    </svg>
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  'Save'
+                )}
               </button>
             </div>
           </form>

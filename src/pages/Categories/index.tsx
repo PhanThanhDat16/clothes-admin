@@ -11,39 +11,6 @@ import ReactPaginate from 'react-paginate'
 import { NavLink } from 'react-router'
 import { CATEGORIES_PAGE } from '@/constants'
 
-// const dataCategory = [
-//   {
-//     id: 1,
-//     name: 'Category 1',
-//     description: 'Description for Category 1'
-//   },
-//   {
-//     id: 2,
-//     name: 'Category 2',
-//     description: 'Description for Category 2'
-//   },
-//   {
-//     id: 3,
-//     name: 'Category 3',
-//     description: 'Description for Category 3'
-//   },
-//   {
-//     id: 4,
-//     name: 'Category 4',
-//     description: 'Description for Category 4'
-//   },
-//   {
-//     id: 5,
-//     name: 'Category 5',
-//     description: 'Description for Category 5'
-//   },
-//   {
-//     id: 6,
-//     name: 'Category 6',
-//     description: 'Description for Category 6'
-//   }
-// ]
-
 interface IColorStatus {
   name: string
   background: string
@@ -63,7 +30,6 @@ export const COLORSTATUS: IColorStatus[] = [
     color: 'text-red-700'
   }
 ]
-
 const LIMIT_PAGE = 10
 const Category = () => {
   const columns = [

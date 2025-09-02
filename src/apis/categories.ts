@@ -13,6 +13,8 @@ export const getAllCategory = async (params?: { search?: string; page?: number; 
       limit: params?.limit || 10
     }
   })
+
+export const getAllCategoryAll = async () => await axiosConfig.get(`${DEFAULT_URL}/all`)
 export const updateCategory = async (cateId: string, values: ICategory) =>
   await axiosConfig.put(`${DEFAULT_URL}/${cateId}`, values)
 export const deleteCategory = async (cateId: string) => await axiosConfig.delete(`${DEFAULT_URL}/${cateId}`)

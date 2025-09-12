@@ -7,6 +7,7 @@ import {
   CUSTOMERS_PAGE,
   HOME_PAGE,
   LOGIN_PAGE,
+  MESSAGE_PAGE,
   ORDERS_PAGE,
   PRODUCTS_PAGE,
   PROFILE,
@@ -30,6 +31,8 @@ import SignUp from '@/pages/Signup'
 import CategoryDetail from '@/pages/CategoryDetail'
 import ProductDetail from '@/pages/ProductDetail'
 import CustomerDetail from '@/pages/CustomerDetail'
+import Message from '@/pages/Message'
+import MainMessage from '@/pages/MainMessage'
 
 const AppRouters = () => {
   return (
@@ -46,6 +49,9 @@ const AppRouters = () => {
             <Route path={`${CUSTOMERS_PAGE}/:id`} element={<CustomerDetail />} />
             <Route path={ORDERS_PAGE} element={<Order />} />
             <Route path={PROFILE} element={<Profile />} />
+          </Route>
+          <Route path={MESSAGE_PAGE} element={<Message />}>
+            <Route path={`${MESSAGE_PAGE}/:id`} element={<MainMessage />}></Route>
           </Route>
         </Route>
 

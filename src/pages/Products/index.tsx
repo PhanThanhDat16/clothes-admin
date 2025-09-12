@@ -1,11 +1,17 @@
-import { getAllProduct } from '@/apis/productService'
+import { getAllCategoryAll } from '@/apis/categories'
+import { deleteProduct, getAllProduct } from '@/apis/productService'
 import ExportImport from '@/components/common/ExportImport'
 import Heading from '@/components/common/Heading'
 import SidebarAdd from '@/components/common/SidebarAdd'
 import Table from '@/components/common/Table'
-import { IProductDefault } from '@/models/product'
+import { PRODUCTS_PAGE } from '@/constants'
+import { ICategory } from '@/models/categories'
+import { IProduct, IProductDefault } from '@/models/product'
+import { debounce } from 'lodash'
 import { useEffect, useState } from 'react'
 import ReactPaginate from 'react-paginate'
+import { NavLink } from 'react-router'
+import Swal from 'sweetalert2'
 
 const LIMIT_PAGE = 20
 const Product = () => {
@@ -19,14 +25,14 @@ const Product = () => {
     {
       title: 'Actions',
       dataKey: 'actions',
-      render: () => (
+      render: (product: IProduct) => (
         <div className="flex items-center gap-2 text-sm font-normal">
-          <span>
+          <span className="cursor-pointer" onClick={() => handleDeleteProduct(product)}>
             <i className="bx bx-trash text-[var(--Aluminium)] text-base"></i>
           </span>
-          <span>
+          <NavLink to={`${PRODUCTS_PAGE}/${product._id}`} className="cursor-pointer">
             <i className="bx bx-edit text-[var(--Aluminium)] text-base"></i>
-          </span>
+          </NavLink>
         </div>
       )
     }
@@ -35,7 +41,11 @@ const Product = () => {
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [total, setTotal] = useState(1)
-  const handleGetAll = async (params?: { search?: string; page?: number; limit?: number }) => {
+  const [categories, setCategories] = useState<ICategory[]>([])
+  const [selectedCategory, setSelectedCategory] = useState('')
+  const [searchProduct, setSearchProduct] = useState('')
+
+  const handleGetAll = async (params?: { search?: string; page?: number; limit?: number; categoryId?: string }) => {
     try {
       const res = await getAllProduct(params)
       if (!res || !res.data) return
@@ -48,8 +58,64 @@ const Product = () => {
     }
   }
 
+  const handleGetAllCategory = async () => {
+    try {
+      const res = await getAllCategoryAll()
+      setCategories(res.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleDeleteProduct = async (product: IProduct) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This action cannot be undone!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          if (!product) throw new Error('Cant do it')
+          // Handle Delete
+          await deleteProduct(product._id as string)
+          Swal.fire({
+            title: 'Deleted!',
+            text: 'The product has been deleted.',
+            icon: 'success'
+          })
+          handleGetAll()
+        } catch (error) {
+          console.error('product', error)
+        }
+      }
+    })
+  }
+
+  const handleSearchUser = debounce((value: string) => {
+    if (value.trim() === '') {
+      handleGetAll()
+    } else {
+      const param = {
+        search: value,
+        page: 1,
+        limit: 10,
+        categoryId: selectedCategory.trim() !== '' ? selectedCategory : ''
+      }
+      handleGetAll(param)
+    }
+  }, 500)
+
   useEffect(() => {
-    handleGetAll()
+    handleSearchUser(searchProduct)
+  }, [selectedCategory, searchProduct])
+
+  useEffect(() => {
+    ;(async () => {
+      await Promise.all([handleGetAll(), handleGetAllCategory()])
+    })()
   }, [])
 
   const dataFormat = products.map((product) => ({
@@ -82,24 +148,24 @@ const Product = () => {
       </div>
 
       {/* fillter */}
-      <div className="grid w-full grid-cols-4 gap-6 p-4 mt-6 text-sm bg-white rounded-md">
+      <div className="grid w-full grid-cols-3 gap-6 p-4 mt-6 text-sm bg-white rounded-md">
         <input
           type="text"
-          placeholder="Search by Category name"
+          placeholder="Search by name"
+          onChange={(e) => setSearchProduct(e.target.value)}
           className="items-center h-12 px-4 my-2 bg-gray-100 border rounded-md"
         />
         <div className="">
-          <select className="items-center w-full h-12 px-2 my-2 bg-gray-100 border rounded-md">
-            <option value="">Select Category</option>
-            <option value="1">Category 1</option>
-            <option value="2">Category 2</option>
-          </select>
-        </div>
-        <div>
-          <select className="items-center w-full h-12 px-4 my-2 bg-gray-100 border rounded-md">
-            <option value="">Select Orderby</option>
-            <option value="1">Orderby 1</option>
-            <option value="2">Orderby 2</option>
+          <select
+            className="items-center w-full h-12 px-2 my-2 bg-gray-100 border rounded-md"
+            onChange={(e) => setSelectedCategory(e.target.value)}
+          >
+            <option value="">Select a category</option>
+            {categories.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category.name}
+              </option>
+            ))}
           </select>
         </div>
         <div className="flex w-full gap-2 my-2">

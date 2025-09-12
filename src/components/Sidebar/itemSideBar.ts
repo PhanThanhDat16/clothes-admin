@@ -1,4 +1,4 @@
-import { CATEGORIES_PAGE, CUSTOMERS_PAGE, HOME_PAGE, ORDERS_PAGE, PRODUCTS_PAGE } from '@/constants'
+import { CATEGORIES_PAGE, CUSTOMERS_PAGE, HOME_PAGE, MESSAGE_PAGE, ORDERS_PAGE, PRODUCTS_PAGE } from '@/constants'
 
 export const itemSideBar = [
   {
@@ -25,5 +25,10 @@ export const itemSideBar = [
     name: 'Order',
     path: ORDERS_PAGE,
     icon: 'bx bx-cart'
+  },
+  {
+    name: 'Message',
+    path: MESSAGE_PAGE,
+    icon: 'bx  bx-message-circle-dots'
   }
 ]

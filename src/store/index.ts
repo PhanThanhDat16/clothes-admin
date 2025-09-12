@@ -1,4 +1,4 @@
-import { logOut } from '@/apis/authService'
+// import { logOut } from '@/apis/authService'
 import { LOGIN_PAGE } from '@/constants'
 
 export const handleLogout = async () => {
@@ -8,7 +8,7 @@ export const handleLogout = async () => {
   const rememberMe = localStorage.getItem('rememberMe')
 
   if (refreshToken) {
-    await logOut(refreshToken)
+    // await logOut(refreshToken)
     localStorage.clear()
     localStorage.setItem('email', email || '')
     localStorage.setItem('password', pwd || '')

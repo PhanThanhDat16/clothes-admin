@@ -5,12 +5,13 @@ const DEFAULT_URL = '/items'
 
 export const createProduct = async (values: IProduct) => await axiosConfig.post(`${DEFAULT_URL}`, values)
 export const getProductDetail = async (productId: string) => await axiosConfig.get(`${DEFAULT_URL}/${productId}`)
-export const getAllProduct = async (params?: { search?: string; page?: number; limit?: number }) =>
+export const getAllProduct = async (params?: { search?: string; page?: number; limit?: number; categoryId?: string }) =>
   await axiosConfig.get(DEFAULT_URL, {
     params: {
       search: params?.search || '',
       page: params?.page || 1,
-      limit: params?.limit || 10
+      limit: params?.limit || 10,
+      categoryId: params?.categoryId
     }
   })
 

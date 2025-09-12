@@ -233,6 +233,7 @@ const SidebarAddProduct = ({ setOpen, handleGetAll }: ISidebar) => {
             </div>
           </div>
         </div>
+
         {/* Category */}
         <div className="mt-4">
           <label className="block text-sm font-medium text-slate-700 mb-2">Category</label>

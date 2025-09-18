@@ -1,32 +1,8 @@
 // import { useState, useRef, useEffect } from 'react'
 import { HOME_PAGE } from '@/constants'
+import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router'
-// const mockUsers = [
-//   {
-//     id: 1,
-//     name: 'Support',
-//     avatar: 'https://ui-avatars.com/api/?name=Support&background=10b981&color=fff',
-//     online: true,
-//     lastMessage: 'What are you interested in?',
-//     lastTime: '09:03'
-//   },
-//   {
-//     id: 2,
-//     name: 'Alice Nguyen',
-//     avatar: 'https://ui-avatars.com/api/?name=Alice+Nguyen&background=6366f1&color=fff',
-//     online: false,
-//     lastMessage: 'Thank you!',
-//     lastTime: '08:45'
-//   },
-//   {
-//     id: 3,
-//     name: 'Bob Tran',
-//     avatar: 'https://ui-avatars.com/api/?name=Bob+Tran&background=f59e42&color=fff',
-//     online: true,
-//     lastMessage: 'Can you send me the invoice?',
-//     lastTime: 'Yesterday'
-//   }
-// ]
+const users: any[] = []
 
 // const mockMessagesMap: Record<number, any[]> = {
 //   1: [
@@ -81,7 +57,7 @@ import { NavLink, Outlet } from 'react-router'
 
 const Message = () => {
   // const [users, setUsers] = useState(mockUsers)
-  // const [selectedUserId, setSelectedUserId] = useState<number>(users[0].id)
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null)
   // const [messagesMap, setMessagesMap] = useState<Record<number, any[]>>(mockMessagesMap)
   // const [input, setInput] = useState('')
   // const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -149,35 +125,57 @@ const Message = () => {
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          <ul>
-            {/* {users.map((user) => (
-              <li
-                key={user.id}
-                className={`flex items-center gap-3 px-6 py-4 cursor-pointer transition
-                  ${selectedUserId === user.id ? 'bg-emerald-50 border-l-4 border-emerald-500' : 'hover:bg-gray-50'}
-                `}
-                onClick={() => setSelectedUserId(user.id)}
-              >
-                <div className="relative">
-                  <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full object-cover border" />
-                  <span
-                    className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${
-                      user.online ? 'bg-emerald-400' : 'bg-gray-300'
-                    }`}
-                  ></span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-medium text-gray-800 truncate">{user.name}</div>
-                  <div className="text-xs text-gray-400 truncate">{user.lastMessage}</div>
-                </div>
-                <div className="text-xs text-gray-400">{user.lastTime}</div>
-              </li>
-            ))} */}
-          </ul>
+          {users && users.length > 0 ? (
+            <ul>
+              {users.map((user) => (
+                <li
+                  key={user.id}
+                  className={`flex items-center gap-3 px-6 py-4 cursor-pointer transition ${
+                    selectedUserId === user.id ? 'bg-emerald-50 border-l-4 border-emerald-500' : 'hover:bg-gray-50'
+                  }`}
+                  onClick={() => setSelectedUserId(user.id)}
+                >
+                  <div className="relative">
+                    <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full object-cover border" />
+                    <span
+                      className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${
+                        user.online ? 'bg-emerald-400' : 'bg-gray-300'
+                      }`}
+                    ></span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-gray-800 truncate">{user.name}</div>
+                    <div className="text-xs text-gray-400 truncate">{user.lastMessage}</div>
+                  </div>
+                  <div className="text-xs text-gray-400">{user.lastTime}</div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="h-full flex flex-col items-center justify-center text-center px-6 py-12 text-gray-400">
+              <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                <i className="bx  bx-message-circle-notification text-3xl text-gray-400"></i>
+              </div>
+              <p className="font-medium text-gray-600 leading-5">No conversations yet</p>
+              <p className="text-sm text-gray-400">No open conversations left hanging.</p>
+            </div>
+          )}
         </div>
       </aside>
+
       {/* Main Chat */}
-      <Outlet></Outlet>
+      <main className="flex-1 flex items-center justify-center bg-gradient-to-br from-white to-emerald-50">
+        {users && users.length > 0 ? (
+          <Outlet />
+        ) : (
+          <div className="text-center px-6 text-gray-500">
+            <div className="flex items-center justify-center rounded-full bg-gray-100 mb-6 mx-auto w-[100px] h-[100px]">
+              <img src="/img/chat.png" alt="" />
+            </div>
+            <h2 className="text-lg font-semibold text-gray-600">Select a conversation</h2>
+          </div>
+        )}
+      </main>
     </div>
   )
 }

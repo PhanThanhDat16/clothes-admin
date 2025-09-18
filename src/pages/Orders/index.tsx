@@ -1,218 +1,24 @@
+import { getOrderAll } from '@/apis/orderService'
 import Heading from '@/components/common/Heading'
 import Table from '@/components/common/Table'
-
-const mockData: any[] = [
-  {
-    id: 1,
-    orderTime: '2025-01-01 10:00:00',
-    orderNumber: '1234567890',
-    customerName: 'John Doe',
-    email: 'john.doe@example.com',
-    customerPhone: '1234567890',
-    total: 200,
-    status: 'Pending'
-  },
-  {
-    id: 2,
-    orderTime: '2025-01-02 11:00:00',
-    orderNumber: '1234567891',
-    customerName: 'Jane Smith',
-    email: 'jane.smith@example.com',
-    customerPhone: '0987654321',
-    total: 150,
-    status: 'Processing'
-  },
-  {
-    id: 3,
-    orderTime: '2025-01-03 12:00:00',
-    orderNumber: '1234567892',
-    customerName: 'Mike Brown',
-    email: 'mike.brown@example.com',
-    customerPhone: '1122334455',
-    total: 300,
-    status: 'Completed'
-  },
-  {
-    id: 4,
-    orderTime: '2025-01-04 13:00:00',
-    orderNumber: '1234567893',
-    customerName: 'Emily White',
-    email: 'emily.white@example.com',
-    customerPhone: '2233445566',
-    total: 250,
-    status: 'Pending'
-  },
-  {
-    id: 5,
-    orderTime: '2025-01-05 14:00:00',
-    orderNumber: '1234567894',
-    customerName: 'Chris Green',
-    email: 'chris.green@example.com',
-    customerPhone: '3344556677',
-    total: 180,
-    status: 'Processing'
-  },
-  {
-    id: 6,
-    orderTime: '2025-01-06 15:00:00',
-    orderNumber: '1234567895',
-    customerName: 'Sarah Black',
-    email: 'sarah.black@example.com',
-    customerPhone: '4455667788',
-    total: 220,
-    status: 'Completed'
-  },
-  {
-    id: 7,
-    orderTime: '2025-01-07 16:00:00',
-    orderNumber: '1234567896',
-    customerName: 'David Blue',
-    email: 'david.blue@example.com',
-    customerPhone: '5566778899',
-    total: 270,
-    status: 'Pending'
-  },
-  {
-    id: 8,
-    orderTime: '2025-01-08 17:00:00',
-    orderNumber: '1234567897',
-    customerName: 'Laura Gray',
-    email: 'laura.gray@example.com',
-    customerPhone: '6677889900',
-    total: 190,
-    status: 'Processing'
-  },
-  {
-    id: 9,
-    orderTime: '2025-01-09 18:00:00',
-    orderNumber: '1234567898',
-    customerName: 'Tom Yellow',
-    email: 'tom.yellow@example.com',
-    customerPhone: '7788990011',
-    total: 210,
-    status: 'Completed'
-  },
-  {
-    id: 10,
-    orderTime: '2025-01-10 19:00:00',
-    orderNumber: '1234567899',
-    customerName: 'Anna Purple',
-    email: 'anna.purple@example.com',
-    customerPhone: '8899001122',
-    total: 230,
-    status: 'Pending'
-  },
-  {
-    id: 11,
-    orderTime: '2025-01-11 20:00:00',
-    orderNumber: '1234567900',
-    customerName: 'Mark Red',
-    email: 'mark.red@example.com',
-    customerPhone: '9900112233',
-    total: 240,
-    status: 'Processing'
-  },
-  {
-    id: 12,
-    orderTime: '2025-01-12 21:00:00',
-    orderNumber: '1234567901',
-    customerName: 'Sophia Pink',
-    email: 'sophia.pink@example.com',
-    customerPhone: '1011121314',
-    total: 260,
-    status: 'Completed'
-  },
-  {
-    id: 13,
-    orderTime: '2025-01-13 22:00:00',
-    orderNumber: '1234567902',
-    customerName: 'Oliver Brown',
-    email: 'oliver.brown@example.com',
-    customerPhone: '1213141516',
-    total: 280,
-    status: 'Pending'
-  },
-  {
-    id: 14,
-    orderTime: '2025-01-14 23:00:00',
-    orderNumber: '1234567903',
-    customerName: 'Emma Green',
-    email: 'emma.green@example.com',
-    customerPhone: '1314151617',
-    total: 300,
-    status: 'Processing'
-  },
-  {
-    id: 15,
-    orderTime: '2025-01-15 00:00:00',
-    orderNumber: '1234567904',
-    customerName: 'Liam Gray',
-    email: 'liam.gray@example.com',
-    customerPhone: '1415161718',
-    total: 320,
-    status: 'Completed'
-  },
-  {
-    id: 16,
-    orderTime: '2025-01-16 01:00:00',
-    orderNumber: '1234567905',
-    customerName: 'Ava Blue',
-    email: 'ava.blue@example.com',
-    customerPhone: '1516171819',
-    total: 340,
-    status: 'Pending'
-  },
-  {
-    id: 17,
-    orderTime: '2025-01-17 02:00:00',
-    orderNumber: '1234567906',
-    customerName: 'Noah White',
-    email: 'noah.white@example.com',
-    customerPhone: '1617181920',
-    total: 360,
-    status: 'Processing'
-  },
-  {
-    id: 18,
-    orderTime: '2025-01-18 03:00:00',
-    orderNumber: '1234567907',
-    customerName: 'Isabella Black',
-    email: 'isabella.black@example.com',
-    customerPhone: '1718192021',
-    total: 380,
-    status: 'Completed'
-  },
-  {
-    id: 19,
-    orderTime: '2025-01-19 04:00:00',
-    orderNumber: '1234567908',
-    customerName: 'Mason Yellow',
-    email: 'mason.yellow@example.com',
-    customerPhone: '1819202122',
-    total: 400,
-    status: 'Pending'
-  },
-  {
-    id: 20,
-    orderTime: '2025-01-20 05:00:00',
-    orderNumber: '1234567909',
-    customerName: 'Sophia Purple',
-    email: 'sophia.purple@example.com',
-    customerPhone: '1920212223',
-    total: 420,
-    status: 'Processing'
-  }
-]
+import { ORDERS_PAGE } from '@/constants'
+import { IOrder } from '@/models/order'
+import { useEffect, useState } from 'react'
+import { NavLink } from 'react-router'
 
 const Order = () => {
   const columns = [
     { title: 'Id', dataKey: 'id' },
-    { title: 'Order Time', dataKey: 'orderTime' },
-    { title: 'Order Number', dataKey: 'orderNumber' },
-    { title: 'Customer Name', dataKey: 'customerName' },
+    { title: 'Created At', dataKey: 'createdAt' },
+    {
+      title: 'Quantity Product',
+      dataKey: 'orderItems',
+      render: (lenght: number) => <p className="text-center">{lenght}</p>
+    },
+    { title: 'FullName', dataKey: 'fullName' },
     { title: 'Email', dataKey: 'email' },
-    { title: 'Phone', dataKey: 'customerPhone' },
-    { title: 'Total', dataKey: 'total' },
+    { title: 'Total', dataKey: 'totalPrice' },
+    { title: 'FinalTotal', dataKey: 'finalTotal' },
     {
       title: 'Status',
       dataKey: 'status',
@@ -221,15 +27,15 @@ const Order = () => {
         let bg = ''
 
         switch (status) {
-          case 'Pending':
+          case 'pending':
             color = 'text-yellow-700'
             bg = 'bg-yellow-100'
             break
-          case 'Processing':
+          case 'processing':
             color = 'text-blue-700'
             bg = 'bg-blue-100'
             break
-          case 'Completed':
+          case 'completed':
             color = 'text-green-700'
             bg = 'bg-green-100'
             break
@@ -243,27 +49,43 @@ const Order = () => {
     {
       title: 'Actions',
       dataKey: 'actions',
-      render: () => (
+      render: (order: IOrder) => (
         <div className="flex items-center gap-2 text-sm font-normal">
           <span>
             <i className="bx  bx-printer text-[var(--Aluminium)] text-base"></i>
           </span>
-          <span>
+          <NavLink to={`${ORDERS_PAGE}/${order._id}`}>
             <i className="bx  bx-search-alt text-[var(--Aluminium)] text-base"></i>
-          </span>
+          </NavLink>
         </div>
       )
     }
   ]
 
-  const dataFormat = mockData.map((order) => ({
-    id: order.id,
-    orderTime: new Date(order.orderTime).toDateString(),
-    orderNumber: order.orderNumber,
-    customerName: order.customerName,
+  const [orders, setOrders] = useState<IOrder[] | []>([])
+
+  const handleGetAllOrder = async () => {
+    try {
+      const res = await getOrderAll()
+      console.log(res)
+      setOrders(res.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    handleGetAllOrder()
+  }, [])
+
+  const dataFormat = orders.map((order) => ({
+    id: order._id,
+    createdAt: new Date(order.createdAt).toDateString(),
+    orderItems: order.orderItems.length,
+    fullName: order.fullName,
     email: order.email,
-    customerPhone: order.customerPhone,
-    total: order.total,
+    totalPrice: order.totalPrice,
+    finalTotal: order.finalTotal,
     status: order.status,
     actions: order
   }))
@@ -336,7 +158,7 @@ const Order = () => {
         </div>
       </div>
 
-      {mockData.length === 0 ? (
+      {orders.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 bg-white rounded-lg shadow-sm mt-6">
           <div className="p-6 bg-emerald-50 rounded-full mb-4">
             <i className="bx bx-receipt text-5xl text-emerald-500"></i>

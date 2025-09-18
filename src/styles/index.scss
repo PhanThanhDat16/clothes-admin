@@ -65,3 +65,7 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+.doughnut-chart canvas {
+  height: 200px;
+}

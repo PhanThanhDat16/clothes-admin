@@ -1,4 +1,8 @@
+import { getDashboard } from '@/apis/dashboardService'
+import { getProductTopPopular } from '@/apis/productService'
 import Heading from '@/components/common/Heading'
+import { IProduct } from '@/models/product'
+import { formatCurrencyVND } from '@/utils'
 import {
   Chart as ChartJS,
   BarElement,
@@ -11,20 +15,89 @@ import {
   Tooltip,
   Legend
 } from 'chart.js'
+import { useEffect, useState } from 'react'
 import { Line, Doughnut } from 'react-chartjs-2'
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Tooltip, Legend, Title)
 
-// Datamock line chart
-const days = Array.from({ length: 31 }, (_, i) => `${i + 1}`)
-const totalOrderData = Array.from({ length: 31 }, () => Math.floor(Math.random() * 100) + 20)
-const sumFinalTotalData = totalOrderData.map((order) => order * (Math.random() * 10000 + 50000))
+// // Datamock line chart
+// const days = Array.from({ length: 31 }, (_, i) => `${i + 1}`)
+// const totalOrderData = Array.from({ length: 31 }, () => Math.floor(Math.random() * 100) + 20)
+// const sumFinalTotalData = totalOrderData.map((order) => order * (Math.random() * 10000 + 50000))
 
-// Datamock doughnut chart
-const defaultLabelsDoughnutChart = ['Pending', 'Processing', 'Delivered', 'Cancelled', 'Refunded']
-const doughnutChartData = [120, 90, 230, 50, 20]
+// // Datamock doughnut chart
+// const defaultLabelsDoughnutChart = ['Pending', 'Cancelled', 'Success']
+// const doughnutChartData = [120, 90, 230]
+
+interface ILineChart {
+  labels: string[]
+  datasets: {
+    totalOrderData: number[]
+    sumFinalTotalData: number[]
+  }
+}
+
+interface IDoughnutChart {
+  labels: string[]
+  datasets: number[]
+}
 
 const HomePage = () => {
+  const [overview, setOverview] = useState({
+    summary: {
+      todayOrder: 0,
+      thisMonth: 0,
+      lastMonth: 0
+    },
+    orders: {
+      totalOrder: 0,
+      orderPending: 0,
+      orderCancelled: 0,
+      orderSuccess: 0
+    }
+  })
+  const [lineChart, setLineChart] = useState<ILineChart>({
+    labels: [],
+    datasets: {
+      totalOrderData: [],
+      sumFinalTotalData: []
+    }
+  })
+  const [doughnutChart, setDoughnutChart] = useState<IDoughnutChart>({
+    labels: [],
+    datasets: []
+  })
+  const [itemPopular, setItemPopular] = useState<IProduct[] | []>([])
+
+  const handleGetItemPopular = async () => {
+    try {
+      const res = await getProductTopPopular()
+      setItemPopular(res.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleGetDashboard = async () => {
+    try {
+      const res = await getDashboard()
+      setOverview({
+        summary: res.data.summary,
+        orders: res.data.orders
+      })
+      setLineChart(res.data.charts.lineChart)
+      setDoughnutChart(res.data.charts.doughnutChart)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    ;(async () => {
+      await Promise.all([handleGetDashboard(), handleGetItemPopular()])
+    })()
+  }, [])
+
   return (
     <div className="h-full">
       <Heading text="Dashboard Overview" />
@@ -39,24 +112,14 @@ const HomePage = () => {
               </div>
               <div>
                 <p className="mb-3 text-base font-medium text-gray-50">Today Orders</p>
-                <p className="text-2xl font-bold leading-none text-gray-50">$3248.80</p>
+                <p className="text-2xl font-bold leading-none text-gray-50">
+                  {formatCurrencyVND(overview.summary.todayOrder)}
+                </p>
               </div>
             </div>
           </div>
         </div>
-        <div className="min-w-0 rounded-lg overflow-hidden bg-white flex justify-center h-full">
-          <div className=" border border-gray-200 justify-between w-full p-6 rounded-lg text-white bg-orange-400">
-            <div className="text-center xl:mb-0 mb-3">
-              <div className="text-center inline-block text-3xl text-white bg-orange-400">
-                <i className="bx  bx-layers"></i>
-              </div>
-              <div>
-                <p className="mb-3 text-base font-medium text-gray-50">Yesterday Orders</p>
-                <p className="text-2xl font-bold leading-none text-gray-50">$139.79</p>
-              </div>
-            </div>
-          </div>
-        </div>
+
         <div className="min-w-0 rounded-lg overflow-hidden bg-white flex justify-center text-center h-full">
           <div className=" border border-gray-200 w-full p-6 rounded-lg text-white bg-blue-500">
             <div className="text-center inline-block text-3xl text-white bg-blue-500">
@@ -64,35 +127,32 @@ const HomePage = () => {
             </div>
             <div>
               <p className="mb-3 text-base font-medium text-gray-50">This Month</p>
-              <p className="text-2xl font-bold leading-none text-gray-50">$6787.88</p>
+              <p className="text-2xl font-bold leading-none text-gray-50">
+                {formatCurrencyVND(overview.summary.thisMonth)}
+              </p>
             </div>
           </div>
         </div>
-        <div className="min-w-0 rounded-lg overflow-hidden bg-white flex justify-center text-center h-full">
-          <div className=" border border-gray-200 w-full p-6 rounded-lg text-white bg-cyan-600">
-            <div className="text-center inline-block text-3xl text-white bg-cyan-600">
-              <i className="bx  bx-credit-card-alt"></i>
-            </div>
-            <div>
-              <p className="mb-3 text-base font-medium text-gray-50">Last Month</p>
-              <p className="text-2xl font-bold leading-none text-gray-50">$182709.65</p>
-            </div>
-          </div>
-        </div>
-        <div className="min-w-0 rounded-lg overflow-hidden bg-white flex justify-center text-center h-full">
-          <div className=" border border-gray-200 w-full p-6 rounded-lg text-white bg-emerald-600">
-            <div className="text-center inline-block text-3xl text-white bg-emerald-600">
-              <i className="bx  bx-credit-card-alt"></i>
-            </div>
-            <div>
-              <p className="mb-3 text-base font-medium text-gray-50">All-Time Sales</p>
-              <p className="text-2xl font-bold leading-none text-gray-50">$819882.80</p>
+
+        <div className="min-w-0 rounded-lg overflow-hidden bg-white flex justify-center h-full">
+          <div className=" border border-gray-200 justify-between w-full p-6 rounded-lg text-white bg-orange-400">
+            <div className="text-center xl:mb-0 mb-3">
+              <div className="text-center inline-block text-3xl text-white bg-orange-400">
+                <i className="bx  bx-layers"></i>
+              </div>
+              <div>
+                <p className="mb-3 text-base font-medium text-gray-50">Last Month</p>
+                <p className="text-2xl font-bold leading-none text-gray-50">
+                  {' '}
+                  {formatCurrencyVND(overview.summary.lastMonth)}
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-4 mb-8">
+      <div className="grid gap-4 md:grid-cols-4 xl:grid-cols-4 mb-8">
         <div className="min-w-0 rounded-lg overflow-hidden bg-white flex h-full">
           <div className="p-4 flex items-center border border-gray-200 w-full rounded-lg">
             <div className="flex items-center justify-center p-3 rounded-full h-12 w-12 text-center mr-4 text-lg text-orange-600 bg-orange-100">
@@ -102,7 +162,7 @@ const HomePage = () => {
               <h6 className="text-sm mb-1 font-medium text-gray-600">
                 <span>Total Order</span>
               </h6>
-              <p className="text-2xl font-bold leading-none text-gray-600">1007</p>
+              <p className="text-lg font-bold leading-none text-gray-600"> {overview.orders.totalOrder}</p>
             </div>
           </div>
         </div>
@@ -127,33 +187,31 @@ const HomePage = () => {
               <h6 className="text-sm mb-1 font-medium text-gray-600">
                 <span>Orders Pending</span>
               </h6>
-              <p className="text-2xl font-bold leading-none text-gray-600">313</p>
+              <p className="text-lg font-bold leading-none text-gray-600">{overview.orders.orderPending}</p>
             </div>
           </div>
         </div>
         <div className="min-w-0 rounded-lg overflow-hidden bg-white flex h-full">
           <div className="p-4 flex items-center border border-gray-200 w-full rounded-lg">
-            <div className="flex items-center justify-center p-3 rounded-full h-12 w-12 text-center mr-4 text-lg text-teal-600 bg-teal-100">
+            <div className="flex items-center justify-center p-3 rounded-full h-12 w-12 text-center mr-4 text-lg text-red-600 bg-red-100">
               <svg
                 stroke="currentColor"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeLinecap="round"
-                height="1em"
-                width="1em"
+                height="2em"
+                width="2em"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <rect x={1} y={3} width={15} height={13} />
-                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
-                <circle cx="5.5" cy="18.5" r="2.5" />
-                <circle cx="18.5" cy="18.5" r="2.5" />
+                <line x1="8" y1="8" x2="16" y2="16" stroke="currentColor" strokeWidth="2" />
+                <line x1="16" y1="8" x2="8" y2="16" stroke="currentColor" strokeWidth="2" />
               </svg>
             </div>
             <div>
               <h6 className="text-sm mb-1 font-medium text-gray-600">
-                <span>Orders Processing</span>
+                <span>Orders Cancelled</span>
               </h6>
-              <p className="text-2xl font-bold leading-none text-gray-600">139</p>
+              <p className="text-lg font-bold leading-none text-gray-600">{overview.orders.orderCancelled}</p>
             </div>
           </div>
         </div>
@@ -164,9 +222,9 @@ const HomePage = () => {
             </div>
             <div>
               <h6 className="text-sm mb-1 font-medium text-gray-600">
-                <span>Orders Delivered</span>
+                <span>Orders Success</span>
               </h6>
-              <p className="text-2xl font-bold leading-none text-gray-600">444</p>
+              <p className="text-2xl font-bold leading-none text-gray-600">{overview.orders.orderSuccess}</p>
             </div>
           </div>
         </div>
@@ -182,11 +240,11 @@ const HomePage = () => {
           <div className="p-5 h-[400px]">
             <Line
               data={{
-                labels: days,
+                labels: lineChart.labels,
                 datasets: [
                   {
                     label: 'Total Orders',
-                    data: totalOrderData,
+                    data: lineChart.datasets.totalOrderData,
                     borderColor: 'blue',
                     backgroundColor: 'rgba(59,130,246,0.1)',
                     borderWidth: 2,
@@ -203,10 +261,10 @@ const HomePage = () => {
                   tooltip: {
                     enabled: true,
                     callbacks: {
-                      label: function (tooltipItem) {
+                      label: (tooltipItem) => {
                         const dayIndex = tooltipItem.dataIndex
-                        const totalOrder = totalOrderData[dayIndex]
-                        const sumFinalTotal = sumFinalTotalData[dayIndex]
+                        const totalOrder = lineChart.datasets.totalOrderData[dayIndex]
+                        const sumFinalTotal = lineChart.datasets.sumFinalTotalData[dayIndex]
                         return [`Total Orders: ${totalOrder}`, `Total Amount: ${sumFinalTotal.toLocaleString()} VND`]
                       }
                     }
@@ -222,18 +280,18 @@ const HomePage = () => {
         </div>
 
         {/* Doughnut Chart */}
-        <div className="bg-white shadow-md doughnut-chart w-full lg:max-w-[400px] mx-auto">
+        <div className="bg-white shadow-md doughnut-chart w-full lg:max-w-[400px] mx-auto flex flex-col">
           <div className="flex justify-between p-5 border-b db-card-header">
             <h3 className="db-card-title text-[14.5px] md:text-[16px]">Orders Summary</h3>
           </div>
-          <div className="flex items-center justify-center">
-            <div className="max-w-[350px] max-h-[350px] p-5">
+          <div className="flex items-center justify-center flex-1 ">
+            <div className="max-w-[350px] max-h-[350px] p-5 doughnut-chart">
               <Doughnut
                 data={{
-                  labels: defaultLabelsDoughnutChart,
+                  labels: doughnutChart.labels,
                   datasets: [
                     {
-                      data: doughnutChartData,
+                      data: doughnutChart.datasets,
                       backgroundColor: ['#a953ff', '#5ec869', '#FFCD56', '#f74d4d', '#36A2EB'],
                       hoverOffset: 4
                     }
@@ -241,17 +299,22 @@ const HomePage = () => {
                 }}
                 options={{
                   responsive: true,
+                  maintainAspectRatio: false,
                   plugins: {
-                    legend: {
-                      position: 'bottom'
-                    },
+                    legend: { position: 'bottom' },
                     tooltip: {
                       callbacks: {
-                        label: function (tooltipItem) {
-                          const value = tooltipItem.raw as number
-                          const total = doughnutChartData.reduce((a, b) => a + b, 0)
-                          const percent = ((value / total) * 100).toFixed(1)
-                          return `${tooltipItem.label}: ${value} (${percent}%)`
+                        label: function (context: any) {
+                          const value = context.raw as number
+                          const dataArr = context.dataset.data as number[]
+                          const total = dataArr.reduce((a, b) => a + b, 0)
+                          const percent = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0'
+                          const label =
+                            context.label ??
+                            (context.chart.data.labels && context.dataIndex !== undefined
+                              ? context.chart.data.labels[context.dataIndex]
+                              : '')
+                          return `${label}: ${value} (${percent}%)`
                         }
                       }
                     }
@@ -264,23 +327,25 @@ const HomePage = () => {
       </div>
 
       {/* Top Product */}
-      <div className="mt-10">
-        <h2 className="text-xl font-semibold text-gray-700 mb-4">Top Products</h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          <div className="p-4 border rounded-lg bg-white shadow-sm">
-            <div className="font-semibold text-gray-800 mb-1">T-shirt</div>
-            <div className="text-sm text-gray-500 mb-2">Category: Shirt</div>
-            <div className="flex justify-between text-sm text-gray-600">
-              <span>
-                Units Sold: <span className="font-bold">1,240</span>
-              </span>
-              <span>
-                Revenue: <span className="font-bold">$62,000</span>
-              </span>
-            </div>
-          </div>
+      {itemPopular.length > 0 && (
+        <div className="mt-10">
+          <h2 className="text-xl font-semibold text-gray-700 mb-4">Top Products</h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {itemPopular.map((item) => (
+              <div key={item._id} className="p-4 border rounded-lg bg-white shadow-sm">
+                <div className="font-semibold text-gray-800 mb-1">{item.name}</div>
+                <div className="flex justify-between text-sm text-gray-600">
+                  <span>
+                    OldPrice: <span className="font-bold">{formatCurrencyVND(item.oldPrice)}</span>
+                  </span>
+                  <span>
+                    Price: <span className="font-bold">{formatCurrencyVND(item.price)}</span>
+                  </span>
+                </div>
+              </div>
+            ))}
 
-          <div className="p-4 border rounded-lg bg-white shadow-sm">
+            {/* <div className="p-4 border rounded-lg bg-white shadow-sm">
             <div className="font-semibold text-gray-800 mb-1">Jacket Jean Black</div>
             <div className="text-sm text-gray-500 mb-2">Category: Jacket</div>
             <div className="flex justify-between text-sm text-gray-600">
@@ -291,9 +356,10 @@ const HomePage = () => {
                 Revenue: <span className="font-bold">$37,600</span>
               </span>
             </div>
+          </div> */}
           </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

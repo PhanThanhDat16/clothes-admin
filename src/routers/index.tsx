@@ -33,6 +33,7 @@ import ProductDetail from '@/pages/ProductDetail'
 import CustomerDetail from '@/pages/CustomerDetail'
 import Message from '@/pages/Message'
 import MainMessage from '@/pages/MainMessage'
+import OrderDetail from '@/pages/OrderDetail'
 
 const AppRouters = () => {
   return (
@@ -48,6 +49,7 @@ const AppRouters = () => {
             <Route path={CUSTOMERS_PAGE} element={<Customer />} />
             <Route path={`${CUSTOMERS_PAGE}/:id`} element={<CustomerDetail />} />
             <Route path={ORDERS_PAGE} element={<Order />} />
+            <Route path={`${ORDERS_PAGE}/:id`} element={<OrderDetail />} />
             <Route path={PROFILE} element={<Profile />} />
           </Route>
           <Route path={MESSAGE_PAGE} element={<Message />}>

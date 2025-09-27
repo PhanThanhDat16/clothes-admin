@@ -53,7 +53,7 @@ const HomePage = () => {
       totalOrder: 0,
       orderPending: 0,
       orderCancelled: 0,
-      orderSuccess: 0
+      orderPaid: 0
     }
   })
   const [lineChart, setLineChart] = useState<ILineChart>({
@@ -222,9 +222,9 @@ const HomePage = () => {
             </div>
             <div>
               <h6 className="text-sm mb-1 font-medium text-gray-600">
-                <span>Orders Success</span>
+                <span>Orders Paid</span>
               </h6>
-              <p className="text-2xl font-bold leading-none text-gray-600">{overview.orders.orderSuccess}</p>
+              <p className="text-2xl font-bold leading-none text-gray-600">{overview.orders.orderPaid}</p>
             </div>
           </div>
         </div>

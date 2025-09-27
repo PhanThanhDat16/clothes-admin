@@ -1,6 +1,6 @@
 // Components
 import { deleteUser, getAllUser } from '@/apis/userService'
-import ExportImport from '@/components/common/ExportImport'
+// import ExportImport from '@/components/common/ExportImport'
 import Heading from '@/components/common/Heading'
 import Table from '@/components/common/Table'
 import { CUSTOMERS_PAGE } from '@/constants'
@@ -273,11 +273,11 @@ const Customer = () => {
     <div className="h-full">
       <Heading text="Customer" />
 
-      <div className="p-4 bg-white rounded-md">
+      {/* <div className="p-4 bg-white rounded-md">
         <div className="gap-4 py-3 lg:gap-6 xl:gap-6 md:flex xl:flex">
           <ExportImport />
         </div>
-      </div>
+      </div> */}
 
       <div className="p-4 mt-4 bg-white h-[104px] rounded-md">
         <div className="flex items-center h-full gap-6 py-3 ">

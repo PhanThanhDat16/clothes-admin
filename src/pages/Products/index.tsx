@@ -1,6 +1,6 @@
 import { getAllCategoryAll } from '@/apis/categories'
 import { deleteProduct, getAllProduct } from '@/apis/productService'
-import ExportImport from '@/components/common/ExportImport'
+// import ExportImport from '@/components/common/ExportImport'
 import Heading from '@/components/common/Heading'
 import SidebarAdd from '@/components/common/SidebarAdd'
 import Table from '@/components/common/Table'
@@ -43,7 +43,6 @@ const Product = () => {
   const [total, setTotal] = useState(1)
   const [categories, setCategories] = useState<ICategory[]>([])
   const [selectedCategory, setSelectedCategory] = useState('')
-  const [searchProduct, setSearchProduct] = useState('')
 
   const handleGetAll = async (params?: { search?: string; page?: number; limit?: number; categoryId?: string }) => {
     try {
@@ -94,23 +93,28 @@ const Product = () => {
     })
   }
 
-  const handleSearchUser = debounce((value: string) => {
-    if (value.trim() === '') {
+  const handleSearchUser = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.trim() === '') {
       handleGetAll()
     } else {
       const param = {
-        search: value,
+        search: e.target.value,
         page: 1,
-        limit: 10,
-        categoryId: selectedCategory.trim() !== '' ? selectedCategory : ''
+        limit: 10
       }
       handleGetAll(param)
     }
   }, 500)
 
   useEffect(() => {
-    handleSearchUser(searchProduct)
-  }, [selectedCategory, searchProduct])
+    const param = {
+      search: '',
+      page: 1,
+      limit: 10,
+      categoryId: selectedCategory.trim() !== '' ? selectedCategory : ''
+    }
+    handleGetAll(param)
+  }, [selectedCategory])
 
   useEffect(() => {
     ;(async () => {
@@ -132,7 +136,7 @@ const Product = () => {
     <>
       <Heading text="Product" />
       {/* export */}
-      <div className="grid w-full grid-cols-2 gap-4 p-4 mt-6 text-sm bg-white rounded-md">
+      {/* <div className="grid w-full grid-cols-2 gap-4 p-4 mt-6 text-sm bg-white rounded-md">
         <ExportImport />
         <div className="flex w-full gap-2 py-4">
           <button className="flex items-center justify-center flex-1 text-gray-500 bg-gray-200 border rounded-md">
@@ -143,37 +147,39 @@ const Product = () => {
             <i className="pr-1 bx bx-trash"></i>
             <span>Delete</span>
           </button>
-          <SidebarAdd nameAction="Add Product" type="product" handleGetAll={handleGetAll} />
         </div>
-      </div>
+      </div> */}
 
       {/* fillter */}
-      <div className="grid w-full grid-cols-3 gap-6 p-4 mt-6 text-sm bg-white rounded-md">
-        <input
-          type="text"
-          placeholder="Search by name"
-          onChange={(e) => setSearchProduct(e.target.value)}
-          className="items-center h-12 px-4 my-2 bg-gray-100 border rounded-md"
-        />
-        <div className="">
-          <select
-            className="items-center w-full h-12 px-2 my-2 bg-gray-100 border rounded-md"
-            onChange={(e) => setSelectedCategory(e.target.value)}
-          >
-            <option value="">Select a category</option>
-            {categories.map((category) => (
-              <option key={category._id} value={category._id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
+      <div className=" w-full flex items-center justify-between gap-6 p-4 mt-6 text-sm bg-white rounded-md">
+        <div className="grid grid-cols-2 gap-6 flex-1">
+          <input
+            type="text"
+            placeholder="Search by name"
+            onChange={(e) => handleSearchUser(e)}
+            className="items-center h-12 px-4 my-2 bg-gray-100 border rounded-md"
+          />
+          <div className="">
+            <select
+              className="items-center w-full h-12 px-2 my-2 bg-gray-100 border rounded-md"
+              onChange={(e) => setSelectedCategory(e.target.value)}
+            >
+              <option value="">Select a category</option>
+              {categories.map((category) => (
+                <option key={category._id} value={category._id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-        <div className="flex w-full gap-2 my-2">
+        <SidebarAdd nameAction="Add Product" type="product" handleGetAll={handleGetAll} />
+        {/* <div className="flex w-full gap-2 my-2">
           <button className="flex items-center justify-center flex-1 text-white border rounded-md bg-emerald-500">
             Fillter
           </button>
           <button className="flex items-center justify-center flex-1 bg-gray-200 border rounded-md ">Reset</button>
-        </div>
+        </div> */}
       </div>
 
       {/* table */}

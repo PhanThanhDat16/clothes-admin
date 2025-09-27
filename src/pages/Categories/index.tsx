@@ -1,5 +1,5 @@
 import { deleteCategory, getAllCategory } from '@/apis/categories'
-import ExportImport from '@/components/common/ExportImport'
+// import ExportImport from '@/components/common/ExportImport'
 import Heading from '@/components/common/Heading'
 import SidebarAdd from '@/components/common/SidebarAdd'
 import Table from '@/components/common/Table'
@@ -138,7 +138,7 @@ const Category = () => {
       <Heading text="Category" />
 
       {/* export */}
-      <div className="grid w-full grid-cols-2 gap-4 p-4 mt-6 text-sm bg-white rounded-md">
+      {/* <div className="grid w-full grid-cols-2 gap-4 p-4 mt-6 text-sm bg-white rounded-md">
         <ExportImport />
         <div className="flex w-full gap-2 py-4">
           <button className="flex items-center justify-center flex-1 text-gray-500 bg-gray-200 border rounded-md">
@@ -149,13 +149,12 @@ const Category = () => {
             <i className="pr-1 bx bx-trash"></i>
             <span>Delete</span>
           </button>
-          <SidebarAdd nameAction="Add Category" type="category" handleGetAll={handleGetAll} />
         </div>
-      </div>
+      </div> */}
 
       {/* fillter */}
-      <div className="w-full p-4 mt-6 bg-white rounded-md">
-        <div className="relative">
+      <div className="w-full flex items-center justify-between p-4 mt-6 gap-10 bg-white rounded-md">
+        <div className="relative flex-1">
           <i className="bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></i>
           <input
             type="text"
@@ -164,6 +163,7 @@ const Category = () => {
             onChange={(e) => handleSearchCate(e)}
           />
         </div>
+        <SidebarAdd nameAction="Add Category" type="category" handleGetAll={handleGetAll} />
       </div>
 
       {/* table */}

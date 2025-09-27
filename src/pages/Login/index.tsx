@@ -65,7 +65,7 @@ const Login = () => {
     try {
       const res = await logIn(values)
 
-      const { accessToken, refreshToken } = res.data
+      const { accessToken, refreshToken, dataToken } = res.data
 
       if (!accessToken || !refreshToken) {
         console.error('accessToken or refreshToken empty')
@@ -76,7 +76,7 @@ const Login = () => {
         pauseOnHover: false,
         autoClose: 3000
       })
-
+      localStorage.setItem('userId', dataToken.id)
       localStorage.setItem('accessToken', accessToken)
       navigate(HOME_PAGE)
 

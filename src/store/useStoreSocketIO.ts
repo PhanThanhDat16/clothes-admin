@@ -27,10 +27,7 @@ export const useStoreSocketIO = create<ISocketSore>((set) => ({
 
       socket.on('connect', () => {
         // JOIN ROOM
-        // if (accessToken) {
-        //     set({ socket, isConnected: true })
-        //     socket.emit('joinAdmin', { token: accessToken })
-        //   }
+        socket.emit('admin-room')
         console.log('Socket IO Connected')
         failedAttempts = 0
       })
@@ -44,7 +41,7 @@ export const useStoreSocketIO = create<ISocketSore>((set) => ({
         }
       })
 
-      return socket
+      return { socket, isConnected: true }
     })
   },
 

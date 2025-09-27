@@ -3,8 +3,24 @@ import Heading from '@/components/common/Heading'
 import Table from '@/components/common/Table'
 import { ORDERS_PAGE } from '@/constants'
 import { IOrder } from '@/models/order'
+import { debounce } from 'lodash'
 import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router'
+
+const listStatusOrder = [
+  {
+    value: 'pending',
+    text: 'Pending'
+  },
+  {
+    value: 'cancelled',
+    text: 'Cancelled'
+  },
+  {
+    value: 'paid',
+    text: 'Paid'
+  }
+]
 
 const Order = () => {
   const columns = [
@@ -31,11 +47,11 @@ const Order = () => {
             color = 'text-yellow-700'
             bg = 'bg-yellow-100'
             break
-          case 'processing':
-            color = 'text-blue-700'
-            bg = 'bg-blue-100'
+          case 'cancelled':
+            color = 'text-red-700'
+            bg = 'bg-red-100'
             break
-          case 'completed':
+          case 'paid':
             color = 'text-green-700'
             bg = 'bg-green-100'
             break
@@ -63,16 +79,45 @@ const Order = () => {
   ]
 
   const [orders, setOrders] = useState<IOrder[] | []>([])
+  const [selectedStatus, setSelectedStatus] = useState('')
 
-  const handleGetAllOrder = async () => {
+  const handleGetAllOrder = async (params?: {
+    search?: string
+    page?: number
+    limit?: number
+    categoryId?: string
+  }) => {
     try {
-      const res = await getOrderAll()
-      console.log(res)
-      setOrders(res.data)
+      const res = await getOrderAll(params)
+      setOrders(res.data.data)
     } catch (error) {
       console.log(error)
     }
   }
+
+  const handleSearchOrderOrder = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.trim() === '') {
+      handleGetAllOrder()
+    } else {
+      const param = {
+        search: e.target.value,
+        status: selectedStatus,
+        page: 1,
+        limit: 10
+      }
+      handleGetAllOrder(param)
+    }
+  }, 500)
+
+  useEffect(() => {
+    const param = {
+      search: '',
+      status: selectedStatus,
+      page: 1,
+      limit: 10
+    }
+    handleGetAllOrder(param)
+  }, [selectedStatus])
 
   useEffect(() => {
     handleGetAllOrder()
@@ -95,26 +140,29 @@ const Order = () => {
       <Heading text="Orders" />
 
       <div className="p-4 mt-4 bg-white rounded-md">
-        <div className="grid gap-4 md:grid-cols-5 py-2">
+        <div className="grid gap-4 md:grid-cols-4 py-2">
           <div>
             <input
               className="block w-full h-12 px-3 py-1 text-sm border rounded-md bg-gray-100 focus:bg-white focus:border-gray-200 focus:outline-none"
+              onChange={(e) => handleSearchOrderOrder(e)}
               type="search"
               name="search"
               placeholder="Search by Customer Name"
             />
           </div>
           <div>
-            <select className="block w-full h-12 px-2 py-1 text-sm border rounded-md bg-gray-100 focus:bg-white focus:border-gray-200 focus:outline-none">
-              <option value="Status">Status</option>
-              <option value="Delivered">Delivered</option>
-              <option value="Pending">Pending</option>
-              <option value="Processing">Processing</option>
-              <option value="Cancel">Cancel</option>
+            <select
+              className="block w-full h-12 px-2 py-1 text-sm border rounded-md bg-gray-100 focus:bg-white focus:border-gray-200 focus:outline-none"
+              onChange={(e) => setSelectedStatus(e.target.value)}
+            >
+              <option value="">Status</option>
+              {listStatusOrder.map((item) => (
+                <option value={item.value}>{item.text}</option>
+              ))}
             </select>
           </div>
         </div>
-        <div className="grid gap-4 md:grid-cols-3 py-2">
+        {/* <div className="grid gap-4 md:grid-cols-3 py-2">
           <div>
             <label className="block text-sm text-gray-800">Start Date</label>
             <input
@@ -155,7 +203,7 @@ const Order = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {orders.length === 0 ? (

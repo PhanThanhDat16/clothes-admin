@@ -1,94 +1,74 @@
 // import { useState, useRef, useEffect } from 'react'
-import { HOME_PAGE } from '@/constants'
-import { useState } from 'react'
-import { NavLink, Outlet } from 'react-router'
-const users: any[] = []
-
-// const mockMessagesMap: Record<number, any[]> = {
-//   1: [
-//     {
-//       id: 1,
-//       sender: 'me',
-//       content: 'Hi there! 👋',
-//       time: '09:00'
-//     },
-//     {
-//       id: 2,
-//       sender: 'other',
-//       content: 'Hello! How can I help you?',
-//       time: '09:01'
-//     },
-//     {
-//       id: 3,
-//       sender: 'me',
-//       content: 'I want to know more about your products.',
-//       time: '09:02'
-//     },
-//     {
-//       id: 4,
-//       sender: 'other',
-//       content: 'Sure! We have a wide range of products. What are you interested in?',
-//       time: '09:03'
-//     }
-//   ],
-//   2: [
-//     {
-//       id: 1,
-//       sender: 'me',
-//       content: 'Hi Alice!',
-//       time: '08:40'
-//     },
-//     {
-//       id: 2,
-//       sender: 'other',
-//       content: 'Thank you!',
-//       time: '08:45'
-//     }
-//   ],
-//   3: [
-//     {
-//       id: 1,
-//       sender: 'other',
-//       content: 'Can you send me the invoice?',
-//       time: 'Yesterday'
-//     }
-//   ]
-// }
+import { getAllConversation } from '@/apis/conversation'
+import { HOME_PAGE, MESSAGE_PAGE } from '@/constants'
+import { IConversation } from '@/models/conversation'
+import { useStoreSocketIO } from '@/store/useStoreSocketIO'
+import { useEffect, useState } from 'react'
+import { NavLink, Outlet, useParams } from 'react-router'
 
 const Message = () => {
-  // const [users, setUsers] = useState(mockUsers)
-  const [selectedUserId, setSelectedUserId] = useState<number | null>(null)
-  // const [messagesMap, setMessagesMap] = useState<Record<number, any[]>>(mockMessagesMap)
-  // const [input, setInput] = useState('')
-  // const messagesEndRef = useRef<HTMLDivElement>(null)
-  // const [search, setSearch] = useState('')
+  const [selectedUserId, setSelectedUserId] = useState<string>('')
+  const [conversations, setConversations] = useState<IConversation[] | []>([])
+  const { socket } = useStoreSocketIO((state) => state)
+  const { id } = useParams()
 
-  // const selectedUser = users.find((u) => u.id === selectedUserId)
-  // const messages = messagesMap[selectedUserId] || []
+  const handleGetAllConversation = async () => {
+    try {
+      const res = await getAllConversation()
+      const mapped = res.data.map((c: any) => ({
+        userId: c.userId._id,
+        fullName: c.userId.fullName,
+        email: c.userId.email,
+        avatar: c.userId.avatar,
+        online: false,
+        lastMessage: 'No messages yet',
+        ...c
+      }))
 
-  // useEffect(() => {
-  //   messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  // }, [messages, selectedUserId])
+      setConversations(mapped)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
-  // const handleSend = (e: React.FormEvent) => {
-  //   e.preventDefault()
-  //   if (!input.trim()) return
-  //   const newMsg = {
-  //     id: messages.length + 1,
-  //     sender: 'me',
-  //     content: input,
-  //     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-  //   }
-  //   setMessagesMap((prev) => ({
-  //     ...prev,
-  //     [selectedUserId]: [...(prev[selectedUserId] || []), newMsg]
-  //   }))
-  //   setInput('')
-  //   // Update last message in sidebar
-  //   setUsers((prev) =>
-  //     prev.map((u) => (u.id === selectedUserId ? { ...u, lastMessage: input, lastTime: newMsg.time } : u))
-  //   )
-  // }
+  useEffect(() => {
+    if (socket) {
+      socket.on('new-conversation', async (data) => {
+        const { conversationId } = data
+        socket.emit('join-admin-conversation', { conversationId })
+        handleGetAllConversation()
+      })
+    }
+  }, [socket])
+
+  useEffect(() => {
+    handleGetAllConversation()
+  }, [])
+
+  useEffect(() => {
+    async function joinRoomConversations() {
+      try {
+        const res = await getAllConversation()
+        const mapped = res.data.map((c: any) => ({
+          userId: c.userId._id,
+          fullName: c.userId.fullName,
+          email: c.userId.email,
+          avatar: c.userId.avatar,
+          online: false,
+          lastMessage: 'No messages yet',
+          ...c
+        }))
+        if (socket) {
+          mapped.map((m: any) => {
+            socket.emit('join-admin-conversation', { conversationId: m._id })
+          })
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    joinRoomConversations()
+  }, [socket])
 
   return (
     <div className="flex h-[100vh] bg-gradient-to-br from-emerald-50 via-white to-indigo-50">
@@ -125,30 +105,39 @@ const Message = () => {
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          {users && users.length > 0 ? (
+          {conversations && conversations.length > 0 ? (
             <ul>
-              {users.map((user) => (
-                <li
-                  key={user.id}
+              {conversations.map((c) => (
+                <NavLink
+                  to={`${MESSAGE_PAGE}/${c._id}`}
+                  key={c._id}
                   className={`flex items-center gap-3 px-6 py-4 cursor-pointer transition ${
-                    selectedUserId === user.id ? 'bg-emerald-50 border-l-4 border-emerald-500' : 'hover:bg-gray-50'
+                    selectedUserId === c.userId ? 'bg-emerald-50 border-l-4 border-emerald-500' : 'hover:bg-gray-50'
                   }`}
-                  onClick={() => setSelectedUserId(user.id)}
+                  onClick={() => setSelectedUserId(c.userId)}
                 >
                   <div className="relative">
-                    <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full object-cover border" />
+                    <img src={c.avatar} alt={c.fullName} className="w-10 h-10 rounded-full object-cover border" />
                     <span
                       className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${
-                        user.online ? 'bg-emerald-400' : 'bg-gray-300'
+                        c.online ? 'bg-emerald-400' : 'bg-gray-300'
                       }`}
                     ></span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-gray-800 truncate">{user.name}</div>
-                    <div className="text-xs text-gray-400 truncate">{user.lastMessage}</div>
+                    <div className="font-medium text-gray-800 truncate">{c.fullName}</div>
+                    <div className="text-xs text-gray-400 truncate">{c.lastMessage}</div>
                   </div>
-                  <div className="text-xs text-gray-400">{user.lastTime}</div>
-                </li>
+                  <div className="text-xs text-gray-400">
+                    {' '}
+                    {new Date(c.createdAt).toLocaleString('vi-VN', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      day: '2-digit',
+                      month: '2-digit'
+                    })}
+                  </div>
+                </NavLink>
               ))}
             </ul>
           ) : (
@@ -163,9 +152,8 @@ const Message = () => {
         </div>
       </aside>
 
-      {/* Main Chat */}
       <main className="flex-1 flex items-center justify-center bg-gradient-to-br from-white to-emerald-50">
-        {users && users.length > 0 ? (
+        {id ? (
           <Outlet />
         ) : (
           <div className="text-center px-6 text-gray-500">

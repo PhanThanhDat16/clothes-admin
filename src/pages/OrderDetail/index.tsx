@@ -1,7 +1,8 @@
-import { getOrderDetail } from '@/apis/orderService'
+import { getOrderDetail, updateOrder } from '@/apis/orderService'
 import { IOrderDetail } from '@/models/order'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
+import { toast } from 'react-toastify'
 
 const OrderDetail = () => {
   const [order, setOrder] = useState<IOrderDetail | null>(null)
@@ -11,6 +12,23 @@ const OrderDetail = () => {
     try {
       const res = await getOrderDetail(id)
       setOrder(res.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleChangeStatus = async (newStatus: string) => {
+    if (!id) return
+
+    if (order?.status === 'paid') {
+      toast.warning('The order has been paid, the status cannot be changed!')
+      return
+    }
+
+    try {
+      await updateOrder(id, { status: newStatus })
+      setOrder((prevOrder) => (prevOrder ? { ...prevOrder, status: newStatus } : prevOrder))
+      toast.success('Update status successfully!')
     } catch (error) {
       console.log(error)
     }
@@ -39,16 +57,44 @@ const OrderDetail = () => {
             <p>
               <span className="font-semibold">Email:</span> {order?.email}
             </p>
-            <p>
-              <span className="font-semibold">Trạng thái:</span>
-              <span
-                className={`ml-2 px-3 py-1 rounded-full text-sm font-medium shadow-sm
-            ${order?.status === 'pending' ? 'bg-yellow-100 text-yellow-700' : ''}
-            ${order?.status === 'completed' ? 'bg-green-100 text-green-700' : ''}
-            ${order?.status === 'canceled' ? 'bg-red-100 text-red-700' : ''}`}
-              >
-                {order?.status}
-              </span>
+            <p className="flex items-center">
+              <span className="font-semibold mr-2">Trạng thái:</span>
+              <div className="flex items-center gap-2">
+                {order?.status === 'pending' && (
+                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 font-semibold text-sm">
+                    <i className="bx bx-time text-base mr-1"></i> Pending
+                  </span>
+                )}
+                {order?.status === 'cancelled' && (
+                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-red-100 text-red-700 font-semibold text-sm">
+                    <i className="bx bx-x-circle text-base mr-1"></i> Cancelled
+                  </span>
+                )}
+                {order?.status === 'paid' && (
+                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-700 font-semibold text-sm">
+                    <i className="bx bx-check-circle text-base mr-1"></i> Paid
+                  </span>
+                )}
+
+                <div className="ml-2">
+                  <select
+                    className="border border-gray-300 rounded-md px-2 py-1 text-xs font-medium text-gray-700 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    value={order?.status}
+                    onChange={(e) => handleChangeStatus(e.target.value)}
+                    disabled={order?.status === 'paid'}
+                  >
+                    <option value="pending" disabled={order?.status === 'paid'}>
+                      Pending
+                    </option>
+                    <option value="cancelled" disabled={order?.status === 'paid'}>
+                      Cancelled
+                    </option>
+                    <option value="paid" disabled={order?.status === 'paid'}>
+                      Paid
+                    </option>
+                  </select>
+                </div>
+              </div>
             </p>
             <p>
               <span className="font-semibold">Ngày tạo:</span>{' '}

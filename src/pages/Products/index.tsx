@@ -43,9 +43,11 @@ const Product = () => {
   const [total, setTotal] = useState(1)
   const [categories, setCategories] = useState<ICategory[]>([])
   const [selectedCategory, setSelectedCategory] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleGetAll = async (params?: { search?: string; page?: number; limit?: number; categoryId?: string }) => {
     try {
+      setIsLoading(true)
       const res = await getAllProduct(params)
       if (!res || !res.data) return
       setProducts(res.data.data)
@@ -54,6 +56,8 @@ const Product = () => {
       setPage(res.data.page)
     } catch (error) {
       console.log(error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -135,20 +139,6 @@ const Product = () => {
   return (
     <>
       <Heading text="Product" />
-      {/* export */}
-      {/* <div className="grid w-full grid-cols-2 gap-4 p-4 mt-6 text-sm bg-white rounded-md">
-        <ExportImport />
-        <div className="flex w-full gap-2 py-4">
-          <button className="flex items-center justify-center flex-1 text-gray-500 bg-gray-200 border rounded-md">
-            <i className="pr-1 bx bx-edit"></i>
-            <span>Bulk Action</span>
-          </button>
-          <button className="flex items-center justify-center flex-1 text-white bg-red-400 border rounded-md">
-            <i className="pr-1 bx bx-trash"></i>
-            <span>Delete</span>
-          </button>
-        </div>
-      </div> */}
 
       {/* fillter */}
       <div className=" w-full flex items-center justify-between gap-6 p-4 mt-6 text-sm bg-white rounded-md">
@@ -174,16 +164,15 @@ const Product = () => {
           </div>
         </div>
         <SidebarAdd nameAction="Add Product" type="product" handleGetAll={handleGetAll} />
-        {/* <div className="flex w-full gap-2 my-2">
-          <button className="flex items-center justify-center flex-1 text-white border rounded-md bg-emerald-500">
-            Fillter
-          </button>
-          <button className="flex items-center justify-center flex-1 bg-gray-200 border rounded-md ">Reset</button>
-        </div> */}
       </div>
 
       {/* table */}
-      {products && products.length > 0 && products.length === 0 ? (
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-lg shadow-sm mt-6">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
+          <p className="mt-4 text-sm text-gray-600">Loading products...</p>
+        </div>
+      ) : products && products.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 bg-white rounded-lg shadow-sm mt-6">
           <div className="p-6 bg-emerald-50 rounded-full mb-4">
             <i className="bx bx-package text-5xl text-emerald-500"></i>

@@ -9,7 +9,7 @@ export const getAllUser = async (params?: { search?: string; page?: number; limi
     params: {
       search: params?.search || '',
       page: params?.page || 1,
-      limit: params?.limit || 10
+      limit: params?.limit || 20
     }
   })
 export const updateUser = async (userId: string, value: IUser) =>

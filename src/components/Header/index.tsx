@@ -1,6 +1,8 @@
+import { getProfile } from '@/apis/userService'
+import { IUser } from '@/models/user'
 import { handleLogout } from '@/store'
 import { Menu, MenuItems, MenuItem, MenuButton, Transition } from '@headlessui/react'
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { NavLink } from 'react-router'
 
 interface IListDropdown {
@@ -45,6 +47,19 @@ const Header = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [notiList, setNotiList] = useState(notifications)
   const unreadCount = notiList.filter((n) => !n.isRead).length
+  const [user, setUser] = useState<IUser | null>(null)
+  const handleGetProfile = async () => {
+    try {
+      const res = await getProfile()
+      setUser(res.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    handleGetProfile()
+  }, [])
 
   return (
     <div className=" fixed flex items-center justify-end w-full h-16 gap-6 px-6 bg-white shadow-md z-50">
@@ -142,7 +157,7 @@ const Header = () => {
               className="object-cover w-full h-full"
             />
           </div>
-          <span className="text-sm font-medium">Phan Dat</span>
+          <span className="text-sm font-medium">{user && user.fullName}</span>
         </MenuButton>
 
         <MenuItems className="absolute right-0 w-40 mt-2 origin-top-right bg-white border border-gray-200 rounded-md shadow-lg focus:outline-none z-50">

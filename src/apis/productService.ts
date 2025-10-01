@@ -10,7 +10,7 @@ export const getAllProduct = async (params?: { search?: string; page?: number; l
     params: {
       search: params?.search || '',
       page: params?.page || 1,
-      limit: params?.limit || 10,
+      limit: params?.limit || 20,
       categoryId: params?.categoryId
     }
   })

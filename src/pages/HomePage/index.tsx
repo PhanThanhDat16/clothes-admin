@@ -98,6 +98,8 @@ const HomePage = () => {
     })()
   }, [])
 
+  console.log(itemPopular)
+
   return (
     <div className="h-full">
       <Heading text="Dashboard Overview" />
@@ -333,7 +335,13 @@ const HomePage = () => {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {itemPopular.map((item) => (
               <div key={item._id} className="p-4 border rounded-lg bg-white shadow-sm">
-                <div className="font-semibold text-gray-800 mb-1">{item.name}</div>
+                {/* Phần ảnh + tên ngang hàng */}
+                <div className="flex items-center gap-3 mb-2">
+                  <img src={item.images[0]} alt={item.name} className="w-16 h-16 object-cover rounded" />
+                  <div className="font-semibold text-gray-800">{item.name}</div>
+                </div>
+
+                {/* Phần giá */}
                 <div className="flex justify-between text-sm text-gray-600">
                   <span>
                     OldPrice: <span className="font-bold">{formatCurrencyVND(item.oldPrice)}</span>
@@ -344,19 +352,6 @@ const HomePage = () => {
                 </div>
               </div>
             ))}
-
-            {/* <div className="p-4 border rounded-lg bg-white shadow-sm">
-            <div className="font-semibold text-gray-800 mb-1">Jacket Jean Black</div>
-            <div className="text-sm text-gray-500 mb-2">Category: Jacket</div>
-            <div className="flex justify-between text-sm text-gray-600">
-              <span>
-                Units Sold: <span className="font-bold">940</span>
-              </span>
-              <span>
-                Revenue: <span className="font-bold">$37,600</span>
-              </span>
-            </div>
-          </div> */}
           </div>
         </div>
       )}

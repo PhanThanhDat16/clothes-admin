@@ -67,9 +67,11 @@ const Category = () => {
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [total, setTotal] = useState(1)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleGetAll = async (params?: { search?: string; page?: number; limit?: number }) => {
     try {
+      setIsLoading(true)
       const res = await getAllCategory(params)
       if (!res || !res.data) return
       setCategories(res.data.data)
@@ -78,6 +80,8 @@ const Category = () => {
       setPage(res.data.page)
     } catch (error) {
       console.log(error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -136,22 +140,6 @@ const Category = () => {
   return (
     <>
       <Heading text="Category" />
-
-      {/* export */}
-      {/* <div className="grid w-full grid-cols-2 gap-4 p-4 mt-6 text-sm bg-white rounded-md">
-        <ExportImport />
-        <div className="flex w-full gap-2 py-4">
-          <button className="flex items-center justify-center flex-1 text-gray-500 bg-gray-200 border rounded-md">
-            <i className="pr-1 bx bx-edit"></i>
-            <span>Bulk Action</span>
-          </button>
-          <button className="flex items-center justify-center flex-1 text-white bg-red-400 border rounded-md">
-            <i className="pr-1 bx bx-trash"></i>
-            <span>Delete</span>
-          </button>
-        </div>
-      </div> */}
-
       {/* fillter */}
       <div className="w-full flex items-center justify-between p-4 mt-6 gap-10 bg-white rounded-md">
         <div className="relative flex-1">
@@ -167,7 +155,12 @@ const Category = () => {
       </div>
 
       {/* table */}
-      {categories && categories.length === 0 ? (
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-lg shadow-sm mt-6">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
+          <p className="mt-4 text-sm text-gray-600">Loading categories...</p>
+        </div>
+      ) : categories && categories.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 bg-white rounded-lg shadow-sm mt-6">
           <div className="p-6 bg-emerald-50 rounded-full mb-4">
             <i className="bx bx-folder-open text-5xl text-emerald-500"></i>

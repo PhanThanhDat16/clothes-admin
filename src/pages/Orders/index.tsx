@@ -5,6 +5,7 @@ import { ORDERS_PAGE } from '@/constants'
 import { IOrder } from '@/models/order'
 import { debounce } from 'lodash'
 import { useEffect, useState } from 'react'
+import ReactPaginate from 'react-paginate'
 import { NavLink } from 'react-router'
 
 const listStatusOrder = [
@@ -21,6 +22,7 @@ const listStatusOrder = [
     text: 'Paid'
   }
 ]
+const LIMIT_PAGE = 20
 
 const Order = () => {
   const columns = [
@@ -80,6 +82,10 @@ const Order = () => {
 
   const [orders, setOrders] = useState<IOrder[] | []>([])
   const [selectedStatus, setSelectedStatus] = useState('')
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [total, setTotal] = useState(1)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleGetAllOrder = async (params?: {
     search?: string
@@ -88,10 +94,15 @@ const Order = () => {
     categoryId?: string
   }) => {
     try {
+      setIsLoading(true)
       const res = await getOrderAll(params)
       setOrders(res.data.data)
+      setTotalPages(res.data.totalPages)
+      setTotal(res.data.total)
     } catch (error) {
       console.log(error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -103,7 +114,7 @@ const Order = () => {
         search: e.target.value,
         status: selectedStatus,
         page: 1,
-        limit: 10
+        limit: 20
       }
       handleGetAllOrder(param)
     }
@@ -114,7 +125,7 @@ const Order = () => {
       search: '',
       status: selectedStatus,
       page: 1,
-      limit: 10
+      limit: 20
     }
     handleGetAllOrder(param)
   }, [selectedStatus])
@@ -157,56 +168,22 @@ const Order = () => {
             >
               <option value="">Status</option>
               {listStatusOrder.map((item) => (
-                <option value={item.value}>{item.text}</option>
+                <option key={item.value} value={item.value}>
+                  {item.text}
+                </option>
               ))}
             </select>
           </div>
         </div>
-        {/* <div className="grid gap-4 md:grid-cols-3 py-2">
-          <div>
-            <label className="block text-sm text-gray-800">Start Date</label>
-            <input
-              className="block w-full h-12 px-3 py-1 text-sm border rounded-md bg-gray-100 focus:bg-white focus:border-gray-200 focus:outline-none"
-              type="date"
-              name="startDate"
-            />
-          </div>
-          <div>
-            <label className="block text-sm text-gray-800">End Date</label>
-            <input
-              className="block w-full h-12 px-3 py-1 text-sm border rounded-md bg-gray-100 focus:bg-white focus:border-gray-200 focus:outline-none"
-              type="date"
-              name="startDate"
-            />
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="w-full">
-              <label className="block text-sm text-gray-800" style={{ visibility: 'hidden' }}>
-                Filter
-              </label>
-              <button
-                className="w-full h-12 px-4 text-sm text-white bg-emerald-500 rounded-lg hover:bg-emerald-600 focus:outline-none"
-                type="submit"
-              >
-                Filter
-              </button>
-            </div>
-            <div className="w-full">
-              <label className="block text-sm text-gray-800" style={{ visibility: 'hidden' }}>
-                Reset
-              </label>
-              <button
-                className="w-full h-12 px-4 text-sm text-gray-600 bg-gray-200 rounded-lg focus:outline-none"
-                type="reset"
-              >
-                Reset
-              </button>
-            </div>
-          </div>
-        </div> */}
       </div>
 
-      {orders.length === 0 ? (
+      {/* table */}
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-lg shadow-sm mt-6">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
+          <p className="mt-4 text-sm text-gray-600">Loading orders...</p>
+        </div>
+      ) : orders.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 bg-white rounded-lg shadow-sm mt-6">
           <div className="p-6 bg-emerald-50 rounded-full mb-4">
             <i className="bx bx-receipt text-5xl text-emerald-500"></i>
@@ -220,53 +197,32 @@ const Order = () => {
         <div className="mt-4 overflow-hidden bg-white rounded-lg">
           <div className="w-full overflow-hidden overflow-x-scroll">
             <Table columns={columns} data={dataFormat as any} />
-          </div>
-
-          <div className="flex flex-col justify-between p-4 text-xs text-gray-600 sm:flex-row dark:text-gray-400">
-            <span className="flex items-center font-semibold tracking-wide uppercase">Showing 1-12 of 12</span>
-            <div className="flex mt-2 sm:mt-auto sm:justify-end">
-              <nav aria-label="Table navigation">
-                <ul className="inline-flex items-center">
-                  <li>
-                    <button
-                      className="inline-flex items-center justify-center p-2 font-medium leading-5 text-gray-600 align-bottom transition-colors duration-150 border border-transparent rounded-md opacity-50 cursor-pointer focus:outline-none dark:text-gray-400"
-                      type="button"
-                      aria-label="Previous"
-                    >
-                      <svg className="w-3 h-3" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                          d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                          fillRule="evenodd"
-                        />
-                      </svg>
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      className="inline-flex items-center justify-center px-3 py-1 text-xs font-medium leading-5 text-white align-bottom transition-colors duration-150 border border-transparent rounded-md cursor-pointer focus:outline-none bg-emerald-500 active:bg-emerald-600 hover:bg-emerald-600"
-                      type="button"
-                    >
-                      1
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      className="inline-flex items-center justify-center p-2 font-medium leading-5 text-gray-600 align-bottom transition-colors duration-150 border border-transparent rounded-md opacity-50 cursor-pointer cursor-not-allowed focus:outline-none dark:text-gray-400"
-                      type="button"
-                      aria-label="Next"
-                    >
-                      <svg className="w-3 h-3" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                          clipRule="evenodd"
-                          fillRule="evenodd"
-                        />
-                      </svg>
-                    </button>
-                  </li>
-                </ul>
-              </nav>
+            <div className="flex flex-col justify-between p-4 text-xs text-gray-600 sm:flex-row dark:text-gray-400">
+              <span className="flex items-center font-semibold tracking-wide uppercase">
+                Showing {(page - 1) * LIMIT_PAGE + 1}-{Math.min(page * LIMIT_PAGE, total)} of {totalPages}
+              </span>
+              <div className="flex mt-2 sm:mt-auto sm:justify-end">
+                <nav aria-label="Table navigation">
+                  <ReactPaginate
+                    breakLabel="..."
+                    nextLabel={<i className="bx bx-chevron-right text-lg"></i>}
+                    previousLabel={<i className="bx bx-chevron-left text-lg"></i>}
+                    onPageChange={(selectedItem) => {
+                      const newPage = selectedItem.selected + 1
+                      setPage(newPage)
+                      handleGetAllOrder({ page: newPage, limit: LIMIT_PAGE })
+                    }}
+                    pageRangeDisplayed={3}
+                    pageCount={totalPages}
+                    containerClassName="flex items-center justify-center gap-1 mt-6"
+                    pageClassName="min-w-[36px] h-9 flex items-center justify-center rounded-md border border-gray-200 text-sm font-medium text-gray-600 hover:bg-emerald-100 hover:text-emerald-700 transition"
+                    activeClassName="bg-emerald-500 text-white border-emerald-500 shadow-sm hover:bg-emerald-600"
+                    previousClassName="min-w-[36px] h-9 flex items-center justify-center rounded-md border border-gray-200 text-gray-600 hover:bg-emerald-100 hover:text-emerald-700 transition"
+                    nextClassName="min-w-[36px] h-9 flex items-center justify-center rounded-md border border-gray-200 text-gray-600 hover:bg-emerald-100 hover:text-emerald-700 transition"
+                    breakClassName="px-2 text-gray-400 select-none"
+                  />
+                </nav>
+              </div>
             </div>
           </div>
         </div>

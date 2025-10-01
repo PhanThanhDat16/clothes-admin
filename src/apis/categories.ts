@@ -10,7 +10,7 @@ export const getAllCategory = async (params?: { search?: string; page?: number; 
     params: {
       search: params?.search || '',
       page: params?.page || 1,
-      limit: params?.limit || 10
+      limit: params?.limit || 20
     }
   })
 

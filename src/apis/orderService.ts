@@ -10,7 +10,7 @@ export const getOrderAll = async (params?: { search?: string; page?: number; lim
     params: {
       search: params?.search || '',
       page: params?.page || 1,
-      limit: params?.limit || 10,
+      limit: params?.limit || 20,
       status: params?.status
     }
   })

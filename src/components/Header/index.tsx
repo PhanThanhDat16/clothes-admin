@@ -1,9 +1,14 @@
+import { getListNotification, readAllNotification } from '@/apis/notification'
 import { getProfile } from '@/apis/userService'
+import { INotification } from '@/models/notification'
 import { IUser } from '@/models/user'
 import { handleLogout } from '@/store'
+import { useStoreSocketIO } from '@/store/useStoreSocketIO'
+import { formatDate } from '@/utils'
 import { Menu, MenuItems, MenuItem, MenuButton, Transition } from '@headlessui/react'
 import { Fragment, useEffect, useState } from 'react'
 import { NavLink } from 'react-router'
+import { toast } from 'react-toastify'
 
 interface IListDropdown {
   icon: string
@@ -17,49 +22,70 @@ const listDropDown: IListDropdown[] = [
     href: '/',
     name: 'Dashboard'
   },
-  {
-    icon: 'bx bx-cog',
-    href: '/profile',
-    name: 'Edit Profile'
-  },
+  // {
+  //   icon: 'bx bx-cog',
+  //   href: '/profile',
+  //   name: 'Edit Profile'
+  // },
   {
     icon: 'bx  bx-arrow-out-right-square-half',
     name: 'Logout'
   }
 ]
 
-const notifications = [
-  {
-    id: 1,
-    content: 'Bạn có đơn hàng mới',
-    createdAt: new Date(),
-    isRead: false
-  },
-  {
-    id: 2,
-    content: 'Tài khoản của bạn đã được cập nhật',
-    createdAt: new Date(Date.now() - 1000 * 60 * 60),
-    isRead: true
-  }
-]
-
 const Header = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [notiList, setNotiList] = useState(notifications)
+  const [notiList, setNotiList] = useState<INotification[] | []>([])
   const unreadCount = notiList.filter((n) => !n.isRead).length
   const [user, setUser] = useState<IUser | null>(null)
+  const { socket } = useStoreSocketIO((state) => state)
+
   const handleGetProfile = async () => {
     try {
       const res = await getProfile()
+      const res2 = await getListNotification(res.data._id as string)
+      setNotiList(res2.data)
       setUser(res.data)
     } catch (error) {
       console.log(error)
     }
   }
 
+  const handleGetNotification = async () => {
+    try {
+      if (user) {
+        const res = await getListNotification(user._id as string)
+        setNotiList(res.data)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleReadAll = async () => {
+    try {
+      if (user) {
+        await readAllNotification(user._id as string)
+        await handleGetNotification()
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
-    handleGetProfile()
+    Promise.all([handleGetProfile(), handleGetNotification()])
   }, [])
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('newNotification', () => {
+        handleGetNotification()
+        toast.info('You have a new order', {
+          pauseOnHover: false
+        })
+      })
+    }
+  }, [socket])
 
   return (
     <div className=" fixed flex items-center justify-end w-full h-16 gap-6 px-6 bg-white shadow-md z-50">
@@ -100,16 +126,24 @@ const Header = () => {
                   </div>
 
                   <div
-                    className="absolute right-0 mt-2 bg-white border border-gray-200 rounded-md shadow-xl z-50 
-                    opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto 
-                    transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 w-max"
+                    className="absolute right-0 top-full mt-1 w-48 h-4 bg-transparent pointer-events-auto z-40"
+                    aria-hidden="true"
+                  />
+
+                  <div
+                    className="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded-md shadow-xl z-50 
+               opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto 
+               transition-all duration-150 transform translate-y-2 group-hover:translate-y-0 w-max"
                   >
-                    <button className="block text-left px-4 py-2 text-sm w-max text-gray-700 hover:bg-gray-100">
+                    <button
+                      className="block text-left px-4 py-2 text-sm w-max text-gray-700 hover:bg-gray-100"
+                      onClick={handleReadAll}
+                    >
                       Read All
                     </button>
-                    <button className="block text-left px-4 py-2 text-sm w-max text-gray-700 hover:bg-gray-100">
+                    {/* <button className="block text-left px-4 py-2 text-sm w-max text-gray-700 hover:bg-gray-100">
                       Clear All
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </div>
@@ -128,17 +162,18 @@ const Header = () => {
               ) : (
                 notiList.map((noti) => (
                   <button
-                    key={noti.id}
-                    className={`w-full text-left px-4 py-3 flex gap-3 hover:bg-gray-50 ${
+                    key={noti._id}
+                    className={`w-full text-left px-4 py-3 flex gap-3 items-center hover:bg-gray-50 ${
                       !noti.isRead ? 'bg-gray-50' : ''
                     }`}
                   >
-                    <img src="https://i.pravatar.cc/40" className="w-10 h-10 rounded-full object-cover border" />
+                    <div className="w-10 h-10 flex items-center justify-center rounded-full bg-emerald-100 text-emerald-600 text-xl">
+                      <i className="bx bx-bell"></i>
+                    </div>
+
                     <div className="flex flex-col text-left">
-                      <span className="text-sm text-gray-800">{noti.content}</span>
-                      {/* <span className="text-xs text-gray-500">
-                        {formatDistanceToNow(noti.createdAt, { addSuffix: true })}
-                      </span> */}
+                      <span className="text-sm text-gray-800">{noti.message}</span>
+                      <span className="text-xs text-gray-500">{formatDate(noti.createdAt)}</span>
                     </div>
                   </button>
                 ))

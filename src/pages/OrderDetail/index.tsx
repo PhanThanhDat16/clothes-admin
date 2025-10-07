@@ -1,5 +1,6 @@
 import { getOrderDetail, updateOrder } from '@/apis/orderService'
 import { IOrderDetail } from '@/models/order'
+import { useStoreSocketIO } from '@/store/useStoreSocketIO'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { toast } from 'react-toastify'
@@ -7,6 +8,7 @@ import { toast } from 'react-toastify'
 const OrderDetail = () => {
   const [order, setOrder] = useState<IOrderDetail | null>(null)
   const { id } = useParams()
+  const { socket } = useStoreSocketIO((state) => state)
 
   const handleGetOrderDetail = async (id: string) => {
     try {
@@ -27,6 +29,9 @@ const OrderDetail = () => {
 
     try {
       await updateOrder(id, { status: newStatus })
+      if (socket) {
+        socket.emit('updateOrder', { userId: order?.userId })
+      }
       setOrder((prevOrder) => (prevOrder ? { ...prevOrder, status: newStatus } : prevOrder))
       toast.success('Update status successfully!')
     } catch (error) {

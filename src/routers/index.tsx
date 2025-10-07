@@ -10,7 +10,7 @@ import {
   MESSAGE_PAGE,
   ORDERS_PAGE,
   PRODUCTS_PAGE,
-  PROFILE,
+  // PROFILE,
   SIGNUP_PAGE
 } from '@/constants'
 
@@ -22,7 +22,7 @@ import Product from '@/pages/Products'
 import Category from '@/pages/Categories'
 import Customer from '@/pages/Customers'
 import Order from '@/pages/Orders'
-import Profile from '@/pages/Profile'
+// import Profile from '@/pages/Profile'
 import NotFoundPage from '@/pages/NotFoundPage'
 import PrivateRoute from './PrivateRoute'
 import PrivateRouteLogin from './PrivateRouteLogin'
@@ -50,7 +50,7 @@ const AppRouters = () => {
             <Route path={`${CUSTOMERS_PAGE}/:id`} element={<CustomerDetail />} />
             <Route path={ORDERS_PAGE} element={<Order />} />
             <Route path={`${ORDERS_PAGE}/:id`} element={<OrderDetail />} />
-            <Route path={PROFILE} element={<Profile />} />
+            {/* <Route path={PROFILE} element={<Profile />} /> */}
           </Route>
           <Route path={MESSAGE_PAGE} element={<Message />}>
             <Route path={`${MESSAGE_PAGE}/:id`} element={<MainMessage />}></Route>

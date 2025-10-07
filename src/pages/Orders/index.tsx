@@ -98,7 +98,7 @@ const Order = () => {
       const res = await getOrderAll(params)
       setOrders(res.data.data)
       setTotalPages(res.data.totalPages)
-      setTotal(res.data.total)
+      setTotal(res.data.totalOrders)
     } catch (error) {
       console.log(error)
     } finally {
@@ -127,7 +127,9 @@ const Order = () => {
       page: 1,
       limit: 20
     }
-    handleGetAllOrder(param)
+    if (selectedStatus !== '') {
+      handleGetAllOrder(param)
+    }
   }, [selectedStatus])
 
   useEffect(() => {
@@ -214,6 +216,7 @@ const Order = () => {
                     }}
                     pageRangeDisplayed={3}
                     pageCount={totalPages}
+                    forcePage={page - 1}
                     containerClassName="flex items-center justify-center gap-1 mt-6"
                     pageClassName="min-w-[36px] h-9 flex items-center justify-center rounded-md border border-gray-200 text-sm font-medium text-gray-600 hover:bg-emerald-100 hover:text-emerald-700 transition"
                     activeClassName="bg-emerald-500 text-white border-emerald-500 shadow-sm hover:bg-emerald-600"

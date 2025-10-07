@@ -17,6 +17,7 @@ import {
 } from 'chart.js'
 import { useEffect, useState } from 'react'
 import { Line, Doughnut } from 'react-chartjs-2'
+import { toast } from 'react-toastify'
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Tooltip, Legend, Title)
 
@@ -47,7 +48,7 @@ const HomePage = () => {
     summary: {
       todayOrder: 0,
       thisMonth: 0,
-      lastMonth: 0
+      totalInRange: 0
     },
     orders: {
       totalOrder: 0,
@@ -68,6 +69,8 @@ const HomePage = () => {
     datasets: []
   })
   const [itemPopular, setItemPopular] = useState<IProduct[] | []>([])
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
 
   const handleGetItemPopular = async () => {
     try {
@@ -78,9 +81,9 @@ const HomePage = () => {
     }
   }
 
-  const handleGetDashboard = async () => {
+  const handleGetDashboard = async (filter?: { startDate?: string; endDate?: string }) => {
     try {
-      const res = await getDashboard()
+      const res = await getDashboard(filter)
       setOverview({
         summary: res.data.summary,
         orders: res.data.orders
@@ -92,20 +95,87 @@ const HomePage = () => {
     }
   }
 
+  const handleFilterByDate = async () => {
+    if (!startDate || !endDate) {
+      toast.warning('Please select full start and end dates!', {
+        pauseOnHover: false
+      })
+      return
+    }
+
+    await handleGetDashboard({ startDate, endDate })
+  }
+
   useEffect(() => {
     ;(async () => {
       await Promise.all([handleGetDashboard(), handleGetItemPopular()])
     })()
   }, [])
 
-  console.log(itemPopular)
-
   return (
     <div className="h-full">
       <Heading text="Dashboard Overview" />
 
+      <div className="bg-white border border-gray-100 shadow-md rounded-2xl p-5 mb-8">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-2 flex items-center gap-2">
+              <i className="bx bx-calendar text-emerald-500 text-2xl"></i>
+              Time filter
+            </h3>
+            <p className="text-sm text-gray-500">Select a time period to view sales statistics</p>
+          </div>
+
+          {/* Các ô chọn ngày */}
+          <div className="flex flex-wrap items-end gap-4">
+            <div className="flex flex-col">
+              <label className="text-sm font-semibold text-gray-700 mb-1">From date</label>
+              <input
+                type="date"
+                className="border border-gray-300 rounded-xl px-4 py-2.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-sm font-semibold text-gray-700 mb-1">To day</label>
+              <input
+                type="date"
+                className="border border-gray-300 rounded-xl px-4 py-2.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
+
+            {/* Nút hành động */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleFilterByDate}
+                className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white font-semibold px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+              >
+                <i className="bx  bx-filter text-lg"></i>
+                Filter
+              </button>
+
+              <button
+                onClick={() => {
+                  setStartDate('')
+                  setEndDate('')
+                  handleGetDashboard()
+                }}
+                className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-5 py-2.5 rounded-xl shadow-sm hover:shadow transition-all duration-200"
+              >
+                <i className="bx  bx-refresh-ccw text-lg"></i>
+                Reset
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Over view */}
-      <div className="grid gap-2 mb-8 xl:grid-cols-5 md:grid-cols-3">
+      {/* <div className="grid gap-2 mb-8 xl:grid-cols-5 md:grid-cols-3">
         <div className="min-w-0 rounded-lg overflow-hidden bg-white flex justify-center h-full">
           <div className=" border border-gray-200 justify-between w-full p-6 rounded-lg text-white bg-teal-600">
             <div className="text-center xl:mb-0 mb-3">
@@ -152,6 +222,43 @@ const HomePage = () => {
             </div>
           </div>
         </div>
+      </div> */}
+      <div className="grid gap-2 mb-8 xl:grid-cols-3 md:grid-cols-3">
+        <div className="min-w-0 rounded-lg overflow-hidden bg-white flex justify-center h-full">
+          <div className=" border border-gray-200 justify-between w-full p-6 rounded-lg text-white bg-teal-600">
+            <div className="text-center xl:mb-0 mb-3">
+              <div className="text-center inline-block text-3xl text-white bg-teal-600">
+                <i className="bx bx-layers"></i>
+              </div>
+              <div>
+                <p className="mb-3 text-base font-medium text-gray-50">
+                  {startDate || endDate ? 'Total in Range' : 'Today Orders'}
+                </p>
+                <p className="text-2xl font-bold leading-none text-gray-50">
+                  {formatCurrencyVND(
+                    startDate || endDate ? overview.summary.totalInRange : overview.summary.todayOrder
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {!startDate && !endDate && (
+          <div className="min-w-0 rounded-lg overflow-hidden bg-white flex justify-center text-center h-full">
+            <div className="border border-gray-200 w-full p-6 rounded-lg text-white bg-blue-500">
+              <div className="text-center inline-block text-3xl text-white bg-blue-500">
+                <i className="bx bx-cart"></i>
+              </div>
+              <div>
+                <p className="mb-3 text-base font-medium text-gray-50">This Month</p>
+                <p className="text-2xl font-bold leading-none text-gray-50">
+                  {formatCurrencyVND(overview.summary.thisMonth)}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="grid gap-4 md:grid-cols-4 xl:grid-cols-4 mb-8">
@@ -273,7 +380,7 @@ const HomePage = () => {
                   }
                 },
                 scales: {
-                  x: { title: { display: true, text: 'Day in Month' } },
+                  x: { title: { display: true, text: 'Day' } },
                   y: { display: true, title: { display: true, text: 'Orders' } }
                 }
               }}

@@ -8,7 +8,6 @@ import { formatDate } from '@/utils'
 import { Menu, MenuItems, MenuItem, MenuButton, Transition } from '@headlessui/react'
 import { Fragment, useEffect, useState } from 'react'
 import { NavLink } from 'react-router'
-import { toast } from 'react-toastify'
 
 interface IListDropdown {
   icon: string
@@ -52,8 +51,9 @@ const Header = () => {
 
   const handleGetNotification = async () => {
     try {
-      if (user) {
-        const res = await getListNotification(user._id as string)
+      const userId = localStorage.getItem('userId')
+      if (userId) {
+        const res = await getListNotification(userId as string)
         setNotiList(res.data)
       }
     } catch (error) {
@@ -78,11 +78,8 @@ const Header = () => {
 
   useEffect(() => {
     if (socket) {
-      socket.on('newNotification', () => {
-        handleGetNotification()
-        toast.info('You have a new order', {
-          pauseOnHover: false
-        })
+      socket.on('newNotification', async () => {
+        await handleGetNotification()
       })
     }
   }, [socket])

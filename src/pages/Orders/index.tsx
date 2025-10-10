@@ -18,6 +18,10 @@ const listStatusOrder = [
     text: 'Cancelled'
   },
   {
+    value: 'confirmed',
+    text: 'Confirmed'
+  },
+  {
     value: 'paid',
     text: 'Paid'
   }
@@ -52,6 +56,10 @@ const Order = () => {
           case 'cancelled':
             color = 'text-red-700'
             bg = 'bg-red-100'
+            break
+          case 'confirmed':
+            color = 'text-blue-700'
+            bg = 'bg-blue-100'
             break
           case 'paid':
             color = 'text-green-700'

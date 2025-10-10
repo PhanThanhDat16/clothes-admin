@@ -62,12 +62,12 @@ const OrderDetail = () => {
             <p>
               <span className="font-semibold">Email:</span> {order?.email}
             </p>
-            <p className="flex items-center">
+            <div className="flex items-center">
               <span className="font-semibold mr-2">Trạng thái:</span>
               <div className="flex items-center gap-2">
                 {order?.status === 'pending' && (
                   <span className="inline-flex items-center px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 font-semibold text-sm">
-                    <i className="bx bx-time text-base mr-1"></i> Pending
+                    <i className="bx bx-timer text-base mr-1"></i> Pending
                   </span>
                 )}
                 {order?.status === 'cancelled' && (
@@ -78,6 +78,11 @@ const OrderDetail = () => {
                 {order?.status === 'paid' && (
                   <span className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-700 font-semibold text-sm">
                     <i className="bx bx-check-circle text-base mr-1"></i> Paid
+                  </span>
+                )}
+                {order?.status === 'confirmed' && (
+                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-700 font-semibold text-sm">
+                    <i className="bx bx-check-circle text-base mr-1"></i> Confirmed
                   </span>
                 )}
 
@@ -94,13 +99,16 @@ const OrderDetail = () => {
                     <option value="cancelled" disabled={order?.status === 'paid'}>
                       Cancelled
                     </option>
+                    <option value="confirmed" disabled={order?.status === 'paid'}>
+                      Confirmed
+                    </option>
                     <option value="paid" disabled={order?.status === 'paid'}>
                       Paid
                     </option>
                   </select>
                 </div>
               </div>
-            </p>
+            </div>
             <p>
               <span className="font-semibold">Ngày tạo:</span>{' '}
               {order ? new Date(order.createdAt).toLocaleDateString() : ''}

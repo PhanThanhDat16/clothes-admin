@@ -413,7 +413,7 @@ const HomePage = () => {
                     legend: { position: 'bottom' },
                     tooltip: {
                       callbacks: {
-                        label: function (context: any) {
+                        label: (context: any) => {
                           const value = context.raw as number
                           const dataArr = context.dataset.data as number[]
                           const total = dataArr.reduce((a, b) => a + b, 0)
